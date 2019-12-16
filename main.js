@@ -42,8 +42,6 @@ function cercaFilm() {
                     var variabili = {
                         titolo: film[i].title,
                         titolo_originale: film[i].original_title,
-                        lingua: film[i].original_language,
-                        voto: film[i].vote_average
                     }
                     // Creo il template
                     var html = template_function(variabili);
@@ -51,7 +49,7 @@ function cercaFilm() {
                     $('.contenitore-film').append(html);
                     // Chiamo la funzione per creare la bandierina in base  alla lingua del film
                     var bandiera = creaBandiera(film[i].original_language);
-                    // Appendo la bandierina al film nell'elemnto lingua
+                    // Appendo la bandierina al film nell'elemento lingua
                     $('.film>ul').children(':last').prev().append(bandiera);
                     // Chiamo la funzione per creare il punteggio con le stelline
                     var punti = creaPuntiStelle(film[i].vote_average);
@@ -88,16 +86,14 @@ function creaBandiera(flag) {
 }
 
 function creaPuntiStelle(voto) {
-    var num_arrotondato = Math.round(voto);
-    console.log('Voto arrotondato: ' + num_arrotondato);
-    var num_convertito = convertiPunti(num_arrotondato);
-    console.log('Voto convertito: ' + num_convertito);
     var stelle = '';
-    if (num_convertito == 0) {
+    if (voto == 0) {
         for (var j = 0; j < 5; j++) {
                 stelle = stelle + '<i class="fas fa-star grey"></i>';
         }
     } else {
+        var num_arrotondato = Math.round(voto);
+        var num_convertito = convertiPunti(num_arrotondato);
         for (var j = 0; j < num_convertito; j++) {
                 stelle = stelle + '<i class="fas fa-star yellow"></i>';
         }
@@ -111,11 +107,8 @@ function creaPuntiStelle(voto) {
 }
 
 function convertiPunti(num_arrotondato) {
-    console.log('Voto passato a convertiPunti(): ' + num_arrotondato);
     switch(true) {
-      case (num_arrotondato == 0) :
-          return 0;
-      case (num_arrotondato == 0) || (num_arrotondato == 2):
+      case (num_arrotondato == 1) || (num_arrotondato == 2):
         return 1;
       case (num_arrotondato == 3) || (num_arrotondato == 4):
         return 2;

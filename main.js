@@ -69,27 +69,29 @@ function creaPuntiStelle(voto) {
     var num_convertito = convertiPunti(num_arrotondato);
     console.log('Voto convertito: ' + num_convertito);
     var stelle = '';
-    /*if (num_convertito == 0) {
-
-    } else {
-
-    }*/
-    for (var j = 0; j < num_convertito; j++) {
-            stelle = stelle + '<i class="fas fa-star yellow"></i>';
-    }
-    /*if (num_convertito < 5) {
-        for (var i = 0; i < (5 - num_convertito); i++) {
-            stelle = stelle + '<i class="fas fa-star grey"></i>';
+    if (num_convertito == 0) {
+        for (var j = 0; j < 5; j++) {
+                stelle = stelle + '<i class="fas fa-star grey"></i>';
         }
-    } */
+    } else {
+        for (var j = 0; j < num_convertito; j++) {
+                stelle = stelle + '<i class="fas fa-star yellow"></i>';
+        }
+        if (num_convertito < 5) {
+            for (var i = 0; i < (5 - num_convertito); i++) {
+                stelle = stelle + '<i class="fas fa-star grey"></i>';
+            }
+        }
+    }
     return stelle;
-    //$('.film>ul>li:last-child').append(stelle);
 }
 
 function convertiPunti(num_arrotondato) {
     console.log('Voto passato a convertiPunti(): ' + num_arrotondato);
     switch(true) {
-      case (num_arrotondato == 1) || (num_arrotondato == 2):
+     case (num_arrotondato == 0) :
+          return 0;
+      case (num_arrotondato == 0) || (num_arrotondato == 2):
         return 1;
       case (num_arrotondato == 3) || (num_arrotondato == 4):
         return 2;

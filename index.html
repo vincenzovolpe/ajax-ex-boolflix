@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+        <script src="main.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="style.css">
+        <title>BOOLFLIX</title>
+    </head>
+    <body>
+        <header>
+            <div class="titolo">
+                <h2>BOOLFLIX</h2>
+            </div>
+            <div class="ricerca">
+                <input class="cerca_film" type="text" placeholder="Inserisci il titolo di un film">
+                <button class="btn_ricerca" type="button" name="button"><i class="fa fa-search"></i></button>
+            </div>
+        </header>
+        <main>
+            <div class="contenitore-film">
+
+            </div>
+        </main>
+        <!-- Template film -->
+        <script id="template-film" type="text/x-handlebars-template">
+            <div class="film">
+                <ul>
+                    <li>Film {{numero}}</li>
+                    <li>Titolo: {{titolo}}</li>
+                    <li>Titolo originale: {{titolo_originale}}</li>
+                    <li>Lingua: {{lingua}}</li>
+                    <li>Voto:  {{voto}}</li>
+                </ul>
+            </div>
+        </script>
+    </body>
+</html>

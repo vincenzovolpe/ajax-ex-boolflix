@@ -62,3 +62,9 @@ main {
 .film > ul {
     list-style-type: none;
 }
+.yellow {
+    color: yellow;
+}
+.grey {
+    color: grey;
+}

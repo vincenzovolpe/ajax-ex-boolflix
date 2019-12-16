@@ -40,7 +40,6 @@ function cercaFilm() {
                 for (var i = 0; i < film.length; i++) {
                     // Creo le variabili per popolare il template di handlebars
                     var variabili = {
-                        numero: i + 1,
                         titolo: film[i].title,
                         titolo_originale: film[i].original_title,
                         lingua: film[i].original_language,
@@ -50,8 +49,14 @@ function cercaFilm() {
                     var html = template_function(variabili);
                     // Lo appendo al contenitore dei film
                     $('.contenitore-film').append(html);
+                    // Chiamo la funzione per creare la bandierina in base  alla lingua del film
+                    var bandiera = creaBandiera(film[i].original_language);
+                    // Appendo la bandierina al film nell'elemnto lingua
+                    $('.film>ul').children(':last').prev().append(bandiera);
+                    // Chiamo la funzione per creare il punteggio con le stelline
                     var punti = creaPuntiStelle(film[i].vote_average);
-                    $('.contenitore-film').children(':last').append(punti);
+                    // Appendo le stelline al film nell'elemnto voto
+                    $('.film>ul').children(':last').append(punti);
                 }
             },
             error: function() {
@@ -61,6 +66,25 @@ function cercaFilm() {
     }
     // Pulisco la barra di ricerca
     $('.cerca_film').val('');
+}
+
+function creaBandiera(flag) {
+    switch(true) {
+      case (flag == 'it'):
+        return '<img src="images/italia.png" alt="Italia">';
+      case (flag == 'us') :
+        return '<img src="images/usa.png" alt="Usa">';
+      case (flag == 'es') :
+        return '<img src="images/spagna.png" alt="Spagna">';
+      case (flag == 'en') :
+        return '<img src="images/regnounito.png" alt="Regno Unito">';
+      case (flag == 'fr') :
+         return '<img src="images/francia.png" alt="Francia">';
+      case (flag == 'de') :
+         return '<img src="images/germania.png" alt="Germania">';
+      default:
+         return flag;
+    }
 }
 
 function creaPuntiStelle(voto) {
@@ -89,7 +113,7 @@ function creaPuntiStelle(voto) {
 function convertiPunti(num_arrotondato) {
     console.log('Voto passato a convertiPunti(): ' + num_arrotondato);
     switch(true) {
-     case (num_arrotondato == 0) :
+      case (num_arrotondato == 0) :
           return 0;
       case (num_arrotondato == 0) || (num_arrotondato == 2):
         return 1;

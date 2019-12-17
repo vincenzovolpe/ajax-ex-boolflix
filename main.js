@@ -1,5 +1,6 @@
 // Memorizzo in una variabile il percorso base  delle API
 var api_url_base = 'https://api.themoviedb.org/3/';
+var api_key = 'f5a961c5e8b2e2e5f35c17c6f3fd8ef6';
 
 $(document).ready(function(){
     // Evento click sul bottone con la lente
@@ -17,8 +18,6 @@ $(document).ready(function(){
 
 // Funzione per ricercare un film inserito nella barra di ricerca
 function cercaFilm() {
-    // Pulisco la lista deifilm
-    $('.film').remove();
 // Recupero l'html del template
   var template_html = $('#template-film').html();
   // Compilo l'html con la funzione di handlebars
@@ -27,10 +26,12 @@ function cercaFilm() {
     var testo_ricerca = $('.cerca_film').val();
     // Controllo se è stato inserito il testo nella barra di ricerca
     if (testo_ricerca.length != 0) {
+        // Pulisco la lista deifilm
+        $('.film').remove();
         $.ajax({
             url: api_url_base + 'search/movie',
             'data': {
-                'api_key': 'f5a961c5e8b2e2e5f35c17c6f3fd8ef6',
+                'api_key': api_key,
                 'query': testo_ricerca,
                 'language': 'it-IT'
             },
@@ -44,7 +45,8 @@ function cercaFilm() {
                     var variabili = {
                         titolo: film[i].title,
                         titolo_originale: film[i].original_title,
-                        stato: bandiera
+                        stato: bandiera,
+                        voto: film[i].vote_average
                     }
                     // Creo il template
                     var html = template_function(variabili);
@@ -62,11 +64,13 @@ function cercaFilm() {
                 alert('Error')
             }
         });
+    } else {
+        alert('Inserisci la query di ricerca');
     }
     // Pulisco la barra di ricerca
     $('.cerca_film').val('');
 }
-
+// Funzione per associare la bandierina alla lingua restituita dall'API
 function creaBandiera(flag) {
     switch(true) {
       case (flag == 'it'):
@@ -85,7 +89,7 @@ function creaBandiera(flag) {
          return flag;
     }
 }
-
+// Funzione che crea le stelline che indicano la  valutazione da 1  a 5
 function creaPuntiStelle(voto) {
     var stelle = '';
     if (voto == 0) {
@@ -106,7 +110,7 @@ function creaPuntiStelle(voto) {
     }
     return stelle;
 }
-
+// Funzione che converti i punti restiuti dalle APi in punti perle stelline da creare
 function convertiPunti(num_arrotondato) {
     switch(true) {
       case (num_arrotondato == 1) || (num_arrotondato == 2):

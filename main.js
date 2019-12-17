@@ -16,6 +16,10 @@ $(document).ready(function(){
     });
 });
 
+// Funzione nuova ricerca
+
+// Funzione per stampare i risultati della ricerca della API
+
 // Funzione per ricercare un film inserito nella barra di ricerca
 function cercaFilm() {
 // Recupero l'html del template
@@ -37,28 +41,30 @@ function cercaFilm() {
             },
             method: 'GET',
             success: function(data) {
-                var film = data.results;
-                for (var i = 0; i < film.length; i++) {
-                    // Chiamo la funzione per creare la bandierina in base  alla lingua del film
-                    var bandiera = creaBandiera(film[i].original_language);
-                    // Creo le variabili per popolare il template di handlebars
-                    var variabili = {
-                        titolo: film[i].title,
-                        titolo_originale: film[i].original_title,
-                        stato: bandiera,
-                        voto: film[i].vote_average
+                if(data.total_results > 0) {
+                    var film = data.results;
+                    for (var i = 0; i < film.length; i++) {
+                        // Chiamo la funzione per creare la bandierina in base  alla lingua del film
+                        var bandiera = creaBandiera(film[i].original_language);
+                        // Creo le variabili per popolare il template di handlebars
+                        var variabili = {
+                            titolo: film[i].title,
+                            titolo_originale: film[i].original_title,
+                            stato: bandiera,
+                            voto: creaPuntiStelle(film[i].vote_average)
+                        }
+                        // Creo il template
+                        var html = template_function(variabili);
+                        // Lo appendo al contenitore dei film
+                        $('.contenitore-film').append(html);
+                        // Chiamo la funzione per creare il punteggio con le stelline
+                        //var punti = creaPuntiStelle(film[i].vote_average);
+                        // Appendo le stelline al film nell'elemnto voto
+                        //$('.film>ul').children(':last').append(punti);
                     }
-                    // Creo il template
-                    var html = template_function(variabili);
-                    // Lo appendo al contenitore dei film
-                    $('.contenitore-film').append(html);
-                    // Appendo la bandierina al film nell'elemento lingua
-                    //$('.film>ul').children(':last').prev().append(bandiera);
-                    // Chiamo la funzione per creare il punteggio con le stelline
-                    var punti = creaPuntiStelle(film[i].vote_average);
-                    // Appendo le stelline al film nell'elemnto voto
-                    $('.film>ul').children(':last').append(punti);
-                }
+                } /*else {
+                    $('.contenitore-film').append('Nessun risultato trovato per la query ' + testo_ricerca);
+                }*/
             },
             error: function() {
                 alert('Error')

@@ -38,19 +38,20 @@ function cercaFilm() {
             success: function(data) {
                 var film = data.results;
                 for (var i = 0; i < film.length; i++) {
+                    // Chiamo la funzione per creare la bandierina in base  alla lingua del film
+                    var bandiera = creaBandiera(film[i].original_language);
                     // Creo le variabili per popolare il template di handlebars
                     var variabili = {
                         titolo: film[i].title,
                         titolo_originale: film[i].original_title,
+                        stato: bandiera
                     }
                     // Creo il template
                     var html = template_function(variabili);
                     // Lo appendo al contenitore dei film
                     $('.contenitore-film').append(html);
-                    // Chiamo la funzione per creare la bandierina in base  alla lingua del film
-                    var bandiera = creaBandiera(film[i].original_language);
                     // Appendo la bandierina al film nell'elemento lingua
-                    $('.film>ul').children(':last').prev().append(bandiera);
+                    //$('.film>ul').children(':last').prev().append(bandiera);
                     // Chiamo la funzione per creare il punteggio con le stelline
                     var punti = creaPuntiStelle(film[i].vote_average);
                     // Appendo le stelline al film nell'elemnto voto
@@ -69,17 +70,17 @@ function cercaFilm() {
 function creaBandiera(flag) {
     switch(true) {
       case (flag == 'it'):
-        return '<img src="images/italia.png" alt="Italia">';
+        return 'italia';
       case (flag == 'us') :
-        return '<img src="images/usa.png" alt="Usa">';
+        return 'usa';
       case (flag == 'es') :
-        return '<img src="images/spagna.png" alt="Spagna">';
+        return 'spagna';
       case (flag == 'en') :
-        return '<img src="images/regnounito.png" alt="Regno Unito">';
+        return 'regnounito';
       case (flag == 'fr') :
-         return '<img src="images/francia.png" alt="Francia">';
+         return 'francia';
       case (flag == 'de') :
-         return '<img src="images/germania.png" alt="Germania">';
+         return 'germania';
       default:
          return flag;
     }

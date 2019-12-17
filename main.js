@@ -127,8 +127,7 @@ $(document).ready(function(){
                     stelle = stelle + '<i class="fas fa-star grey"></i>';
             }
         } else {
-            var num_arrotondato = Math.round(voto);
-            var num_convertito = convertiPunti(num_arrotondato);
+            var num_convertito = convertiPunti(voto);
             for (var j = 0; j < num_convertito; j++) {
                     stelle = stelle + '<i class="fas fa-star yellow"></i>';
             }
@@ -141,18 +140,8 @@ $(document).ready(function(){
         return stelle;
     }
     // Funzione che converti i punti restiuti dalle APi in punti perle stelline da creare
-    function convertiPunti(num_arrotondato) {
-        switch(true) {
-          case (num_arrotondato == 1) || (num_arrotondato == 2):
-            return 1;
-          case (num_arrotondato == 3) || (num_arrotondato == 4):
-            return 2;
-          case (num_arrotondato == 5) || (num_arrotondato == 6):
-            return 3;
-          case (num_arrotondato == 7) || (num_arrotondato == 8):
-             return 4;
-          default:
-             return 5;
-        }
+    function convertiPunti(voto) {
+        // Prima arrotondo il voto decimale ricevuto, poi lo divido per 2 e poi lo arrotondo di nuovo
+        return Math.round(Math.round(voto / 2));
     }
 });

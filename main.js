@@ -3,6 +3,10 @@ $(document).ready(function(){
     var api_url_base = 'https://api.themoviedb.org/3/';
     // Api Key personale per accedere alle API
     var api_key = 'f5a961c5e8b2e2e5f35c17c6f3fd8ef6';
+    // Parte final url per la ricerca dei film
+    var urlfilm  = 'search/movie';
+    // Parte final url per la ricerca delle serie tv
+    var urltv = 'search/tv';
 
     // Recupero l'html del template
     var template_html = $('#template-film').html();
@@ -24,7 +28,10 @@ $(document).ready(function(){
     function checkTesto(testo_ricerca) {
         // Controllo se è stato inserito il testo nella barra di ricerca
         if (testo_ricerca.length != 0) {
-            cercaFilm(testo_ricerca);
+            // Elimino dalla pagina la  lista dei film presenti
+            $('.film').remove();
+            cercaFilm(testo_ricerca, urlfilm);
+            cercaFilm(testo_ricerca, urltv);
             // Pulisco la barra di ricerca
             $('.cerca_film').val('');
         } else {
@@ -32,9 +39,9 @@ $(document).ready(function(){
         }
     }
     // Funzione per ricercare un film inserito nella barra di ricerca interrogando la relativa API
-    function cercaFilm(testo_ricerca) {
+    function cercaFilm(testo_ricerca, url) {
             $.ajax({
-                url: api_url_base + 'search/movie',
+                url: api_url_base + url,
                 'data': {
                     'api_key': api_key,
                     'query': testo_ricerca,
@@ -44,9 +51,7 @@ $(document).ready(function(){
                 success: function(data) {
                     // Controlla se la chiamata restituisce qualche risultato
                     if(data.total_results > 0) {
-                        // Elimino dalla pagina la  lista dei film presenti
-                        $('.film').remove();
-                        stampaFilm(data);
+                        stampaFilm(data, url);
                     } else { // Faccio un alert se la chiamata ajax non restituisce risultati
                         alert('Nessun risultato trovato per la query ' + testo_ricerca);
                     }
@@ -56,18 +61,32 @@ $(document).ready(function(){
                 }
             });
     }
-    // Funzione per la stampa dei film restituiti dalla chiamata Ajax alla' API https://developers.themoviedb.org/3/search/search-movies
-    function stampaFilm(data) {
+
+    // Funzione per la stampa dei film restituiti dalla chiamata Ajax alle API
+    function stampaFilm(data, url) {
+            console.log(url);
             var film = data.results;
             for (var i = 0; i < film.length; i++) {
                 // Chiamo la funzione per creare la bandierina in base  alla lingua del film
                 var bandiera = creaBandiera(film[i].original_language);
-                // Creo le variabili per popolare il template di handlebars
-                var variabili = {
-                    titolo: film[i].title,
-                    titolo_originale: film[i].original_title,
-                    stato: bandiera,
-                    voto: creaPuntiStelle(film[i].vote_average)
+                if (url == 'search/movie') {
+                    // Creo le variabili per popolare il template di handlebars
+                    var variabili = {
+                        tipo: 'Film',
+                        titolo: film[i].title,
+                        titolo_originale: film[i].original_title,
+                        stato: bandiera,
+                        voto: creaPuntiStelle(film[i].vote_average)
+                    }
+                } else {
+                    // Creo le variabili per popolare il template di handlebars
+                    var variabili = {
+                        tipo: 'Serie TV',
+                        titolo: film[i].name,
+                        titolo_originale: film[i].original_name,
+                        stato: bandiera,
+                        voto: creaPuntiStelle(film[i].vote_average)
+                    }
                 }
                 // Creo il template
                 var html = template_function(variabili);
@@ -75,6 +94,7 @@ $(document).ready(function(){
                 $('.contenitore-film').append(html);
             }
     }
+
     // Funzione per associare la bandierina alla lingua restituita dall'API
     function creaBandiera(flag) {
         switch(true) {

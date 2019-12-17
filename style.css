@@ -52,19 +52,45 @@ main {
 }
 
 .film {
+    position: relative;
     height: calc(100% / 3);
     background: rgb(46, 58, 70);
     width: calc((100% / 4) - 60px);
     margin: 5px 10px 5px 10px;
-    padding: 20px;
+    /*padding: 20px;*/
     color: white;
 }
-.film > ul {
+.film .overlay>ul {
     list-style-type: none;
 }
+
+.film>img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid;
+}
+
 .yellow {
     color: yellow;
 }
 .grey {
     color: grey;
+}
+.overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transition: .5s ease;
+    background-color: #008CBA;
+    border: 1px solid;
+}
+
+.film:hover .overlay {
+  opacity: 1;
 }

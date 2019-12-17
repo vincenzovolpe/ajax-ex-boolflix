@@ -27,13 +27,16 @@
         <!-- Template film -->
         <script id="template-film" type="text/x-handlebars-template">
             <div class="film">
-                <ul>
-                    <li>Tipo: {{tipo}}</li>
-                    <li>Titolo: {{titolo}}</li>
-                    <li>Titolo originale: {{titolo_originale}}</li>
-                    <li>Lingua: <img src="images/{{stato}}.png" alt="{{stato}}"></li>
-                    <li>Voto: {{{voto}}}</li>
-                </ul>
+                <img src="{{img_url}}" alt="{{titolo}}">
+                <div class="overlay">
+                    <ul>
+                        <li>Tipo: {{tipo}}</li>
+                        <li>Titolo: {{titolo}}</li>
+                        <li>Titolo originale: {{titolo_originale}}</li>
+                        <li>Lingua: <img src="images/{{stato}}.png" alt="{{stato}}"></li>
+                        <li>Voto: {{{voto}}}</li>
+                    </ul>
+                </div>
             </div>
         </script>
     </body>

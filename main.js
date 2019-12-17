@@ -1,12 +1,16 @@
 $(document).ready(function(){
-    // Percorso base  delle API
+    // Percorso base delle API
     var api_url_base = 'https://api.themoviedb.org/3/';
     // Api Key personale per accedere alle API
     var api_key = 'f5a961c5e8b2e2e5f35c17c6f3fd8ef6';
-    // Parte final url per la ricerca dei film
+    // Parte finale url per la ricerca dei film
     var urlfilm  = 'search/movie';
-    // Parte final url per la ricerca delle serie tv
+    // Parte finale url per la ricerca delle serie tv
     var urltv = 'search/tv';
+    // Percorso base delle immagini di TMDB
+    var img_url_base = 'https://image.tmdb.org/t/p/';
+    // Dimensione del poster del Film
+    var dim_poster = 'w342/';
 
     // Recupero l'html del template
     var template_html = $('#template-film').html();
@@ -24,13 +28,15 @@ $(document).ready(function(){
             checkTesto($('.cerca_film').val());
     	}
     });
-    // Funzione che  prende il testo in input e lo controlla chiamando le relative operazioni
+    // Funzione che  prende il testo in input e lo controlla chiamando le relative funzioni se il testo è correttamente valorizzato
     function checkTesto(testo_ricerca) {
         // Controllo se è stato inserito il testo nella barra di ricerca
         if (testo_ricerca.length != 0) {
             // Elimino dalla pagina la  lista dei film presenti
             $('.film').remove();
+            // Chiamo la funzione che mi restituisce i film in base all' input nella searchbar
             cercaFilm(testo_ricerca, urlfilm);
+            // Chiamo la funzione che mi restituisce le serie tv in base all' input nella searchbar
             cercaFilm(testo_ricerca, urltv);
             // Pulisco la barra di ricerca
             $('.cerca_film').val('');
@@ -38,10 +44,10 @@ $(document).ready(function(){
             alert('Inserisci la query di ricerca');
         }
     }
-    // Funzione per ricercare un film inserito nella barra di ricerca interrogando la relativa API
-    function cercaFilm(testo_ricerca, url) {
+    // Funzione per ricercare un film o una serie tv (in base alla variabile url) inserito nella barra di ricerca interrogando la relativa API
+    function cercaFilm(testo_ricerca, url_suffisso) {
             $.ajax({
-                url: api_url_base + url,
+                url: api_url_base + url_suffisso,
                 'data': {
                     'api_key': api_key,
                     'query': testo_ricerca,
@@ -51,7 +57,7 @@ $(document).ready(function(){
                 success: function(data) {
                     // Controlla se la chiamata restituisce qualche risultato
                     if(data.total_results > 0) {
-                        stampaFilm(data, url);
+                        stampaFilm(data, url_suffisso);
                     } else { // Faccio un alert se la chiamata ajax non restituisce risultati
                         alert('Nessun risultato trovato per la query ' + testo_ricerca);
                     }
@@ -61,31 +67,31 @@ $(document).ready(function(){
                 }
             });
     }
-
     // Funzione per la stampa dei film restituiti dalla chiamata Ajax alle API
-    function stampaFilm(data, url) {
-            console.log(url);
+    function stampaFilm(data, url_suffisso) {
             var film = data.results;
             for (var i = 0; i < film.length; i++) {
                 // Chiamo la funzione per creare la bandierina in base  alla lingua del film
                 var bandiera = creaBandiera(film[i].original_language);
-                if (url == 'search/movie') {
-                    // Creo le variabili per popolare il template di handlebars
+                if (url_suffisso == 'search/movie') {
+                    // Creo le variabili per popolare il template di handlebars con le informazioni relative al film cercato
                     var variabili = {
                         tipo: 'Film',
                         titolo: film[i].title,
                         titolo_originale: film[i].original_title,
                         stato: bandiera,
-                        voto: creaPuntiStelle(film[i].vote_average)
+                        voto: creaPuntiStelle(film[i].vote_average),
+                        img_url: img_url_base + dim_poster + (film[i].poster_path)
                     }
                 } else {
-                    // Creo le variabili per popolare il template di handlebars
+                    // Creo le variabili per popolare il template di handlebars con le informazioni relative alla serie tv cercata
                     var variabili = {
                         tipo: 'Serie TV',
                         titolo: film[i].name,
                         titolo_originale: film[i].original_name,
                         stato: bandiera,
-                        voto: creaPuntiStelle(film[i].vote_average)
+                        voto: creaPuntiStelle(film[i].vote_average),
+                        img_url: img_url_base + dim_poster + (film[i].poster_path)
                     }
                 }
                 // Creo il template
@@ -94,7 +100,6 @@ $(document).ready(function(){
                 $('.contenitore-film').append(html);
             }
     }
-
     // Funzione per associare la bandierina alla lingua restituita dall'API
     function creaBandiera(flag) {
         switch(true) {

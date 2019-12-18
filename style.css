@@ -4,8 +4,20 @@
     box-sizing: border-box;
 }
 
+body {
+    background-color: #404040;
+}
+
+header {
+    background-color: black;
+}
+
 .navbar {
     justify-content: space-between;
+}
+
+.navbar-brand:hover {
+    color: red;
 }
 
 .navbar-brand {
@@ -21,6 +33,7 @@
 }
 
 .film {
+    margin-top: 20px;
     margin-bottom: 20px;
 }
 

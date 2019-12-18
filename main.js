@@ -87,7 +87,7 @@ $(document).ready(function(){
                 }
                 // Controllo se l'API mi restituisce una overview
                 if (film[i].overview != '') {
-                    overview = (film[i].overview).slice(0,400) + '...' // accorcio la descrizione a max 400 caratteri;
+                    overview = (film[i].overview).slice(0,350) + '...' // accorcio la descrizione a max 400 caratteri;
                 } else {
                     overview = 'Nessuna descrizione';
                 }

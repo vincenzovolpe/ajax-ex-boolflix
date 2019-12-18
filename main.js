@@ -106,7 +106,7 @@ $(document).ready(function(){
                 // Creo il template
                 var html = template_function(variabili);
                 // Lo appendo al contenitore dei film
-                $('.contenitore-film').append(html);
+                $('.row').append(html);
             }
     }
     // Funzione per associare la bandierina alla lingua restituita dall'API

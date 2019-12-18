@@ -5,37 +5,40 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
         <script src="main.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
         <link rel="stylesheet" href="style.css">
         <title>BOOLFLIX</title>
     </head>
     <body>
-        <header>
-            <div class="titolo">
-                <h2>BOOLFLIX</h2>
-            </div>
-            <div class="ricerca">
-                <input class="cerca_film" type="text" placeholder="Inserisci il titolo di un film">
-                <button class="btn_ricerca"><i class="fa fa-search"></i></button>
-            </div>
-        </header>
-        <main>
-            <div class="contenitore-film">
+        <div class="container">
+            <nav class="navbar navbar-expand-sm">
+                <a class="navbar-brand" href="#"><h1>BOOLFLIX</h1></a>
+                <div class="form-inline">
+                    <input class="form-control mr-sm-2 cerca_film" type="text" placeholder="Inserisci il titolo di un film">
+                    <button class="btn btn-success btn_ricerca">Cerca</button>
+                </div>
+            </nav>
+        </div>
+
+        <div class="contenitore-film container">
+            <div class="row">
 
             </div>
-        </main>
+        </div>
+
         <!-- Template film -->
         <script id="template-film" type="text/x-handlebars-template">
-            <div class="film">
-                <img src="{{img_url}}" alt="{{titolo}}">
-                <div class="overlay">
-                    <ul>
-                        <li>Tipo: {{tipo}}</li>
-                        <li>Titolo: {{titolo}}</li>
-                        <li>Titolo originale: {{titolo_originale}}</li>
-                        <li>Lingua: {{{stato}}}</li>
-                        <li>Voto: {{{voto}}}</li>
-                    </ul>
+            <div class="col-md-4 col-xs-6">
+                <div class="film card img-fluid">
+                    <img class="card-img-top img-fluid" src="{{img_url}}" alt="{{titolo}}">
+                    <div class="card-img-overlay">
+                        <h4 class="card-title">{{titolo}}</h4>
+                        <p class="card-text">Tipo: {{tipo}}</p>
+                        <p class="card-text">Titolo originale: {{titolo_originale}}</p>
+                        <p class="card-text">Lingua: {{{stato}}}</p>
+                        <p class="card-text">Voto: {{{voto}}}</p>
+                    </div>
                 </div>
             </div>
         </script>

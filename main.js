@@ -141,7 +141,7 @@ $(document).ready(function(){
     }
     // Funzione che converti i punti restiuti dalle APi in punti perle stelline da creare
     function convertiPunti(voto) {
-        // Prima arrotondo il voto decimale ricevuto, poi lo divido per 2 e poi lo arrotondo di nuovo
-        return Math.round(Math.round(voto / 2));
+        // il voto decimale ricevuto lo divido per 2 e poi lo arrotondo per eccesso (in questo modo ottengo un numero da 1 a 5)
+        return Math.ceil(voto / 2);
     }
 });

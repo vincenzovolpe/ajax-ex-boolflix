@@ -59,7 +59,11 @@ $(document).ready(function(){
                     if(data.total_results > 0) {
                         stampaFilm(data, url_suffisso);
                     } else { // Faccio un alert se la chiamata ajax non restituisce risultati
-                        alert('Nessun risultato trovato per la query ' + testo_ricerca);
+                        if (url_suffisso == 'search/movie') { // Film non trovati
+                            alert('Nessun risultato trovato per i film ' + testo_ricerca);
+                        } else { // Serie tv non trovate
+                            alert('Nessun risultato trovato per le serie tv ' + testo_ricerca);
+                        }
                     }
                 },
                 error: function() {

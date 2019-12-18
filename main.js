@@ -33,7 +33,7 @@ $(document).ready(function(){
         // Controllo se è stato inserito il testo nella barra di ricerca
         if (testo_ricerca.length != 0) {
             // Elimino dalla pagina la  lista dei film presenti
-            $('.film').remove();
+            $('.colonna').remove();
             // Chiamo la funzione che mi restituisce i film in base all' input nella searchbar
             cercaFilm(testo_ricerca, urlfilm);
             // Chiamo la funzione che mi restituisce le serie tv in base all' input nella searchbar

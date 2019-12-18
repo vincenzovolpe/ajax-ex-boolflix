@@ -120,19 +120,15 @@ $(document).ready(function(){
     // Funzione che crea le stelline che indicano la  valutazione da 1  a 5
     function creaPuntiStelle(voto) {
         var stelle = '';
-        if (voto == 0) {
-            for (var j = 0; j < 5; j++) {
-                    stelle = stelle + '<i class="fas fa-star grey"></i>';
-            }
-        } else {
+        if (voto != 0) {
+            // Chiamo la funzione che converte i punti nell'intervallo da 1 a 5
             var num_convertito = convertiPunti(voto);
-            for (var j = 0; j < num_convertito; j++) {
-                    stelle = stelle + '<i class="fas fa-star yellow"></i>';
-            }
-            if (num_convertito < 5) {
-                for (var i = 0; i < (5 - num_convertito); i++) {
-                    stelle = stelle + '<i class="fas fa-star grey"></i>';
-                }
+        }
+        for (var i = 0; i < 5; i++) {
+            if (i < num_convertito) {
+                stelle = stelle + '<i class="fas fa-star yellow"></i>';
+            } else {
+                stelle = stelle + '<i class="fas fa-star grey"></i>';
             }
         }
         return stelle;

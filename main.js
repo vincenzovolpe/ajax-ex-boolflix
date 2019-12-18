@@ -78,11 +78,18 @@ $(document).ready(function(){
                 // Chiamo la funzione per creare la bandierina in base  alla lingua del film
                 var bandiera = creaBandiera(film[i].original_language);
                 var poster;
+                var overview;
                 // Controllo se l'API mi restituisce una immagine
                 if (film[i].poster_path != null) { // Creo il percorso corretto per l'immagine
                     poster = img_url_base + dim_poster + (film[i].poster_path);
                 } else { // Carico un immagine di default
                     poster = 'images/noimage.png';
+                }
+                // Controllo se l'API mi restituisce una overview
+                if (film[i].overview != '') {
+                    overview = (film[i].overview).slice(0,400) + '...' // accorcio la descrizione a max 400 caratteri;
+                } else {
+                    overview = 'Nessuna descrizione';
                 }
                 // Setto le variabili in base al tipo restituito dalla ricerca (film o serie tv) controllando il suffisso dell' url
                 if (url_suffisso == 'search/movie') { // Controllo se è un film
@@ -101,7 +108,8 @@ $(document).ready(function(){
                     titolo_originale: titolo_originale,
                     stato: bandiera,
                     voto: creaPuntiStelle(film[i].vote_average),
-                    img_url: poster
+                    img_url: poster,
+                    overview: overview
                 }
                 // Creo il template
                 var html = template_function(variabili);

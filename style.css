@@ -45,6 +45,7 @@
 
 .film:hover .card-img-overlay {
   opacity: 1;
+  cursor: pointer;
 }
 
 .row > div[class*='col-'], .card-img-top {

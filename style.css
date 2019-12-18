@@ -5,7 +5,7 @@
 }
 
 body {
-    background-color: #404040;
+    background-color: #696969;
 }
 
 header {
@@ -51,9 +51,10 @@ header {
 .card-img-overlay {
     opacity: 0;
     transition: .5s ease;
-    background-color: #008CBA;
+    background-color: black;
     border: 1px solid;
     opacity: 0;
+    color: white;
 }
 
 .film:hover .card-img-overlay {

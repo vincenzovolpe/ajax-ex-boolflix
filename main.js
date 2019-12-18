@@ -73,26 +73,24 @@ $(document).ready(function(){
             for (var i = 0; i < film.length; i++) {
                 // Chiamo la funzione per creare la bandierina in base  alla lingua del film
                 var bandiera = creaBandiera(film[i].original_language);
-                if (url_suffisso == 'search/movie') {
-                    // Creo le variabili per popolare il template di handlebars con le informazioni relative al film cercato
-                    var variabili = {
-                        tipo: 'Film',
-                        titolo: film[i].title,
-                        titolo_originale: film[i].original_title,
-                        stato: bandiera,
-                        voto: creaPuntiStelle(film[i].vote_average),
-                        img_url: img_url_base + dim_poster + (film[i].poster_path)
-                    }
-                } else {
-                    // Creo le variabili per popolare il template di handlebars con le informazioni relative alla serie tv cercata
-                    var variabili = {
-                        tipo: 'Serie TV',
-                        titolo: film[i].name,
-                        titolo_originale: film[i].original_name,
-                        stato: bandiera,
-                        voto: creaPuntiStelle(film[i].vote_average),
-                        img_url: img_url_base + dim_poster + (film[i].poster_path)
-                    }
+                // Setto le variabili in base al tipo restituito dalla ricerca (film o serie tv) controllando il suffisso dell' url
+                if (url_suffisso == 'search/movie') { // Controllo se è un film
+                    var tipo = 'Film';
+                    var titolo = film[i].title;
+                    var titolo_originale = film[i].original_title;
+                } else { // E' unsa serie tv
+                    var tipo = 'Serie TV';
+                    var titolo = film[i].name;
+                    var titolo_originale = film[i].original_name;
+                }
+                // Creo le variabili per popolare il template di handlebars con le informazioni relative al film cercato
+                var variabili = {
+                    tipo: tipo,
+                    titolo: titolo,
+                    titolo_originale: titolo_originale,
+                    stato: bandiera,
+                    voto: creaPuntiStelle(film[i].vote_average),
+                    img_url: img_url_base + dim_poster + (film[i].poster_path)
                 }
                 // Creo il template
                 var html = template_function(variabili);
@@ -102,19 +100,19 @@ $(document).ready(function(){
     }
     // Funzione per associare la bandierina alla lingua restituita dall'API
     function creaBandiera(flag) {
-        switch(true) {
-          case (flag == 'it'):
-            return 'italia';
-          case (flag == 'us') :
-            return 'usa';
-          case (flag == 'es') :
-            return 'spagna';
-          case (flag == 'en') :
-            return 'regnounito';
-          case (flag == 'fr') :
-             return 'francia';
-          case (flag == 'de') :
-             return 'germania';
+        switch(flag) {
+          case ('it'):
+            return flag;
+          case ('us') :
+            return flag;
+          case ('es') :
+            return flag;
+          case ('en') :
+            return flag;
+          case ('fr') :
+             return flag;
+          case ('de') :
+             return flag;
           default:
              return flag;
         }
@@ -139,7 +137,7 @@ $(document).ready(function(){
         }
         return stelle;
     }
-    // Funzione che converti i punti restiuti dalle APi in punti perle stelline da creare
+    // Funzione che converti i punti restiuti dalle APi in punti per le stelline da creare
     function convertiPunti(voto) {
         // il voto decimale ricevuto lo divido per 2 e poi lo arrotondo per eccesso (in questo modo ottengo un numero da 1 a 5)
         return Math.ceil(voto / 2);

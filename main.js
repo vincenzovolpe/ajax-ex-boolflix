@@ -102,17 +102,17 @@ $(document).ready(function(){
     function creaBandiera(flag) {
         switch(flag) {
           case ('it'):
-            return flag;
+            return '<img src="images/' + flag + '.png" alt="'+ flag +'">';
           case ('us') :
-            return flag;
+            return '<img src="images/' + flag + '.png" alt="'+ flag +'">';
           case ('es') :
-            return flag;
+            return '<img src="images/' + flag + '.png" alt="'+ flag +'">';
           case ('en') :
-            return flag;
+            return '<img src="images/' + flag + '.png" alt="'+ flag +'">';
           case ('fr') :
-             return flag;
+             return '<img src="images/' + flag + '.png" alt="'+ flag +'">';
           case ('de') :
-             return flag;
+             return '<img src="images/' + flag + '.png" alt="'+ flag +'">';
           default:
              return flag;
         }

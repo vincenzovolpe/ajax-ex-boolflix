@@ -56,15 +56,17 @@ header {
     border: 1px solid;
     opacity: 0;
     color: white;
+    overflow-y: scroll;
 }
 
 .film:hover .card-img-overlay {
   opacity: 1;
   cursor: pointer;
+  overflow-y: scroll;
 }
 
 .row > div[class*='col-'], .card-img-top {
   display: flex;
-  flex:1 0 auto;
+  flex: 1 0 auto;
   height: 100%;
 }

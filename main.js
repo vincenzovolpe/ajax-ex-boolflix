@@ -10,7 +10,7 @@ $(document).ready(function(){
     // Percorso base delle immagini di TMDB
     var img_url_base = 'https://image.tmdb.org/t/p/';
     // Dimensione del poster del Film
-    var dim_poster = 'w342/';
+    var dim_poster = 'w342';
 
     // Recupero l'html del template
     var template_html = $('#template-film').html();

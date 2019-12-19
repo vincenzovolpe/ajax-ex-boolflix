@@ -46,6 +46,7 @@ header {
 
 .film {
     width: 342px;
+    height: 520px;
 }
 
 .card-img-overlay {
@@ -65,4 +66,5 @@ header {
 .row > div[class*='col-'], .card-img-top {
   display: flex;
   flex:1 0 auto;
+  height: 100%;
 }

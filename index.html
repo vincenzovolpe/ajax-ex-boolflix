@@ -12,7 +12,7 @@
     </head>
     <body>
         <header>
-            <div class="container">
+            <div class="container-fluid">
                 <nav class="navbar navbar-expand-sm">
                     <a class="navbar-brand" href="#"><h1>BOOLFLIX</h1></a>
                     <div class="form-inline">
@@ -23,15 +23,17 @@
             </div>
         </header>
         <main>
-            <div class="container contenitore-film ">
-                <div class="row justify-content-center">
+            <div class="container-fluid contenitore-film">
+                <div class="card-columns">
                 </div>
+                <!--<div class="row justify-content-center">
+                </div>-->
             </div>
         </main>
         <!-- Template film -->
         <script id="template-film" type="text/x-handlebars-template">
-            <div class="col-12 col-sm-6 col-md-6 col-lg-4 colonna">
-                <div class="film card img-fluid mt-4">
+            <!--<div class="col-12 col-sm-6 col-md-6 col-lg-4 colonna">-->
+                <div class="film card img-fluid mt-4 colonna">
                     <img class="card-img-top" src="{{img_url}}" alt="{{titolo}}">
                     <div class="card-img-overlay">
                         <h4 class="card-title text-center">{{titolo}}</h4>
@@ -42,7 +44,7 @@
                         <p class="card-text text-justify"><span>Overview: </span>{{overview}}</p>
                     </div>
                 </div>
-            </div>
+            <!--</div>-->
         </script>
     </body>
 </html>

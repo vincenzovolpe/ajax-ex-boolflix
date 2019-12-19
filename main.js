@@ -115,9 +115,9 @@ $(document).ready(function(){
                 var html = template_function(variabili);
                 // Se i risultati ritornati dall' API sono film li faccio comparire sempre prima nella pagina rispetto alle Serie TV
                 if (url_suffisso == 'search/movie') {
-                    $('.row').prepend(html); // Faccio prepend dei film
+                    $('.card-columns').prepend(html); // Faccio prepend dei film
                 } else {
-                    $('.row').append(html); // Faccio append delle serie tv
+                    $('.card-columns').append(html); // Faccio append delle serie tv
                 }
 
             }

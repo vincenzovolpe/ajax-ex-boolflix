@@ -39,11 +39,6 @@ header {
     color: grey;
 }
 
-.film {
-    /*width: 342px;
-    height: 520px;*/
-}
-
 .card-img-overlay {
     opacity: 0;
     transition: .5s ease;
@@ -60,11 +55,41 @@ header {
   overflow-y: auto;
 }
 
-.row > div[class*='col-'], .card-img-top {
-  display: flex;
-  flex: 1 0 auto;
-  height: 100%;
-}
 .card-title, .card-img-overlay span {
     font-weight: 800;
+}
+
+.card-columns .card {
+    margin-bottom: -1rem;
+}
+
+
+@media (min-width: 576px) {
+    .card-columns {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 768px) {
+    .card-columns {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 992px) {
+    .card-columns {
+        column-count: 3;
+    }
+}
+
+@media (min-width: 1200px) {
+    .card-columns {
+        column-count: 4;
+    }
+}
+
+@media (min-width: 1201px) {
+    .card-columns {
+        column-count: 6;
+    }
 }

@@ -24,23 +24,22 @@
         </header>
         <main>
             <div class="container contenitore-film ">
-                <div class="row">
-
+                <div class="row justify-content-center">
                 </div>
             </div>
         </main>
         <!-- Template film -->
         <script id="template-film" type="text/x-handlebars-template">
-            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 colonna">
-                <div class="film card img-fluid">
-                    <img class="card-img-top img-fluid" src="{{img_url}}" alt="{{titolo}}">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-4 colonna">
+                <div class="film card img-fluid mt-4">
+                    <img class="card-img-top" src="{{img_url}}" alt="{{titolo}}">
                     <div class="card-img-overlay">
-                        <h4 class="card-title">{{titolo}}</h4>
-                        <p class="card-text">Tipo: {{tipo}}</p>
-                        <p class="card-text">Titolo originale: {{titolo_originale}}</p>
-                        <p class="card-text">Lingua: {{{stato}}}</p>
-                        <p class="card-text">Voto: {{{voto}}}</p>
-                        <p class="card-text">Overview: {{overview}}</p>
+                        <h4 class="card-title text-center">{{titolo}}</h4>
+                        <p class="card-text"><span>Tipo: </span>{{tipo}}</p>
+                        <p class="card-text"><span>Titolo originale: </span>{{titolo_originale}}</p>
+                        <p class="card-text"><span>Lingua: </span>{{{stato}}}</p>
+                        <p class="card-text"><span>Voto: </span>{{{voto}}}</p>
+                        <p class="card-text text-justify"><span>Overview: </span>{{overview}}</p>
                     </div>
                 </div>
             </div>

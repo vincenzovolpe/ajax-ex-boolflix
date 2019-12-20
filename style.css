@@ -55,7 +55,7 @@ header {
   overflow-y: auto;
 }
 
-.card-title, .card-img-overlay span {
+.card-title, .card-img-overlay span:not(.cast) {
     font-weight: 800;
 }
 

@@ -126,82 +126,6 @@ $(document).ready(function(){
                 } else {
                     $('.card-columns').append(html); // Faccio append delle serie tv
                 }
-                // Chiamata ajax per recuperare i cast
-                if (url_suffisso == 'search/movie') { // Controllo se è un film
-                    // Inizio istruzioni per recuperare il cast del film
-                    var urlcastfilm = 'movie/'+ filmid +'/credits';
-                    $.ajax({
-                        url: api_url_base + urlcastfilm,
-                        'data': {
-                            'api_key': api_key,
-                            'language': 'it-IT'
-                        },
-                        method: 'GET',
-                        success: function(data_cast){
-                            console.log(filmid);
-                            var risultato = data_cast.cast;
-                            var stringa_cast = '';
-                            //var casting = risultato.cast;
-                            if (risultato.length > 0) {
-                                if (risultato.length < 5) {
-                                    for (var i = 0; i < risultato.length; i++) {
-                                        stringa_cast = stringa_cast + risultato[i].name + ', ';
-                                    }
-                                } else {
-                                    for (var i = 0; i < 5; i++) {
-                                        stringa_cast = stringa_cast + risultato[i].name + ', ';
-                                    }
-                                }
-                            } /*else {
-                                alert('Nessun casting presente');
-                            }*/
-                            $('.card-img-overlay[data_id="' + filmid + '"]').find('.cast').append(stringa_cast)
-                            console.log('Stringa cast: ' + stringa_cast);
-                            //listaCast(risultato, filmid);
-                        },
-                        error: function() {
-                            alert('Nessun cast trovato per: ' + titolo);
-                        }
-                    });
-                    // Fine istruzioni per recuperare il cast del film
-                } else { // E' unsa serie tv
-                    // Inizio istruzioni per recuperare il cast della serie tv
-                    var urlcastserietv = 'tv/'+ filmid +'/credits';
-                    $.ajax({
-                        url: api_url_base + urlcastserietv,
-                        'data': {
-                            'api_key': api_key,
-                            'language': 'it-IT'
-                        },
-                        method: 'GET',
-                        success: function(data_cast){
-                            console.log(filmid);
-                            var risultato = data_cast.cast;
-                            var stringa_cast = '';
-                            //var casting = risultato.cast;
-                            if (risultato.length > 0) {
-                                if (risultato.length < 5) {
-                                    for (var i = 0; i < risultato.length; i++) {
-                                        stringa_cast = stringa_cast + risultato[i].name + ', ';
-                                    }
-                                } else {
-                                    for (var i = 0; i < 5; i++) {
-                                        stringa_cast = stringa_cast + risultato[i].name + ', ';
-                                    }
-                                }
-                            } /*else {
-                                alert('Nessun casting presente');
-                            }*/
-                            $('.card-img-overlay[data_id="' + filmid + '"]').find('.cast').append(stringa_cast)
-                            console.log('Stringa cast: ' + stringa_cast);
-                            //listaCast(risultato, film_id);
-                        },
-                        error: function() {
-                            alert('Nessun cast trovato per: ' + titolo);
-                        }
-                    });
-                    // Fine istruzioni per recuperare il cast della serie tv
-                }
             }
     }
     // Funzione per la creazione della lista di 5 nomi e cognomi del cast di un film e di una serie tv
@@ -239,9 +163,7 @@ $(document).ready(function(){
                             } /*else {
                                 alert('Nessun casting presente');
                             }*/
-                            $('.card-img-overlay[data-id="' + filmid + '"]').find('.cast').append(stringa_cast)
-                            console.log('Stringa cast: ' + stringa_cast);
-                            //listaCast(risultato, filmid);
+                            $('.card-img-overlay[data-id="' + filmid + '"]').find('.cast').append(stringa_cast.slice(0, -1));
                         },
                         error: function() {
                             alert('Nessun cast trovato per: ' + titolo);
@@ -259,7 +181,6 @@ $(document).ready(function(){
                         },
                         method: 'GET',
                         success: function(data_cast){
-                            console.log(filmid);
                             let risultato = data_cast.cast;
                             if (risultato.length > 0) {
                                 if (risultato.length < 5) {
@@ -274,9 +195,7 @@ $(document).ready(function(){
                             } /*else {
                                 alert('Nessun casting presente');
                             }*/
-                            $('.card-img-overlay[data-id="' + filmid + '"]').find('.cast').append(stringa_cast)
-                            console.log('Stringa cast: ' + stringa_cast);
-                            //listaCast(risultato, film_id);
+                            $('.card-img-overlay[data-id="' + filmid + '"]').find('.cast').append(stringa_cast.slice(0, -1));
                         },
                         error: function() {
                             alert('Nessun cast trovato per: ' + titolo);

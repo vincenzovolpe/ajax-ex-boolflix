@@ -32,19 +32,18 @@
         </main>
         <!-- Template film -->
         <script id="template-film" type="text/x-handlebars-template">
-            <!--<div class="col-12 col-sm-6 col-md-6 col-lg-4 colonna">-->
                 <div class="film card img-fluid mb-2 colonna">
                     <img class="card-img-top" src="{{img_url}}" alt="{{titolo}}">
-                    <div class="card-img-overlay">
+                    <div class="card-img-overlay" data-id="{{id}}">
                         <h4 class="card-title text-center">{{titolo}}</h4>
                         <p class="card-text"><span>Tipo: </span>{{tipo}}</p>
                         <p class="card-text"><span>Titolo originale: </span>{{titolo_originale}}</p>
                         <p class="card-text"><span>Lingua: </span>{{{stato}}}</p>
                         <p class="card-text"><span>Voto: </span>{{{voto}}}</p>
                         <p class="card-text text-justify"><span>Overview: </span>{{overview}}</p>
+                        <p class="card-text"><span>Cast: </span><span class="cast"></span></p>
                     </div>
                 </div>
-            <!--</div>-->
         </script>
     </body>
 </html>

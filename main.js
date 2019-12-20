@@ -11,11 +11,11 @@ $(document).ready(function(){
     var img_url_base = 'https://image.tmdb.org/t/p/';
     // Dimensione del poster del Film
     var dim_poster = 'w342';
-
     // Recupero l'html del template
     var template_html = $('#template-film').html();
     // Compilo l'html con la funzione di handlebars
     var template_function = Handlebars.compile(template_html);
+
 
     // Evento click sul bottone con la lente
     $(document).on('click', '.btn_ricerca', function(){
@@ -58,6 +58,7 @@ $(document).ready(function(){
                     // Controlla se la chiamata restituisce qualche risultato
                     if(data.total_results > 0) {
                         stampaFilm(data, url_suffisso);
+                        stampaCast(data, url_suffisso);
                     } else { // Faccio un alert se la chiamata ajax non restituisce risultati
                         if (url_suffisso == 'search/movie') { // Film non trovati
                             alert('Nessun risultato trovato per i film ' + testo_ricerca);
@@ -67,16 +68,20 @@ $(document).ready(function(){
                     }
                 },
                 error: function() {
-                    alert('Error')
+                    alert('Error');
                 }
             });
     }
     // Funzione per la stampa dei film restituiti dalla chiamata Ajax alle API
     function stampaFilm(data, url_suffisso) {
             var film = data.results;
+            // Variabile con all'interno lalista dei cast per film
+            //var stringa_cast = '';
             for (var i = 0; i < film.length; i++) {
                 // Chiamo la funzione per creare la bandierina in base  alla lingua del film
                 var bandiera = creaBandiera(film[i].original_language);
+                // Variabile che memorizza l'id del film o della serie tv
+                var filmid = film[i].id;
                 var poster;
                 var overview;
                 // Controllo se l'API mi restituisce una immagine
@@ -87,7 +92,7 @@ $(document).ready(function(){
                 }
                 // Controllo se l'API mi restituisce una overview
                 if (film[i].overview != '') {
-                    overview = (film[i].overview); // accorcio la descrizione a max 400 caratteri;
+                    overview = (film[i].overview);
                 } else {
                     overview = 'Nessuna descrizione';
                 }
@@ -103,13 +108,15 @@ $(document).ready(function(){
                 }
                 // Creo le variabili per popolare il template di handlebars con le informazioni relative al film cercato
                 var variabili = {
+                    id: filmid,
                     tipo: tipo,
                     titolo: titolo,
                     titolo_originale: titolo_originale,
                     stato: bandiera,
                     voto: creaPuntiStelle(film[i].vote_average),
                     img_url: poster,
-                    overview: overview
+                    overview: overview,
+                    //cast: stringa_cast
                 }
                 // Creo il template
                 var html = template_function(variabili);
@@ -119,7 +126,167 @@ $(document).ready(function(){
                 } else {
                     $('.card-columns').append(html); // Faccio append delle serie tv
                 }
+                // Chiamata ajax per recuperare i cast
+                if (url_suffisso == 'search/movie') { // Controllo se è un film
+                    // Inizio istruzioni per recuperare il cast del film
+                    var urlcastfilm = 'movie/'+ filmid +'/credits';
+                    $.ajax({
+                        url: api_url_base + urlcastfilm,
+                        'data': {
+                            'api_key': api_key,
+                            'language': 'it-IT'
+                        },
+                        method: 'GET',
+                        success: function(data_cast){
+                            console.log(filmid);
+                            var risultato = data_cast.cast;
+                            var stringa_cast = '';
+                            //var casting = risultato.cast;
+                            if (risultato.length > 0) {
+                                if (risultato.length < 5) {
+                                    for (var i = 0; i < risultato.length; i++) {
+                                        stringa_cast = stringa_cast + risultato[i].name + ', ';
+                                    }
+                                } else {
+                                    for (var i = 0; i < 5; i++) {
+                                        stringa_cast = stringa_cast + risultato[i].name + ', ';
+                                    }
+                                }
+                            } /*else {
+                                alert('Nessun casting presente');
+                            }*/
+                            $('.card-img-overlay[data_id="' + filmid + '"]').find('.cast').append(stringa_cast)
+                            console.log('Stringa cast: ' + stringa_cast);
+                            //listaCast(risultato, filmid);
+                        },
+                        error: function() {
+                            alert('Nessun cast trovato per: ' + titolo);
+                        }
+                    });
+                    // Fine istruzioni per recuperare il cast del film
+                } else { // E' unsa serie tv
+                    // Inizio istruzioni per recuperare il cast della serie tv
+                    var urlcastserietv = 'tv/'+ filmid +'/credits';
+                    $.ajax({
+                        url: api_url_base + urlcastserietv,
+                        'data': {
+                            'api_key': api_key,
+                            'language': 'it-IT'
+                        },
+                        method: 'GET',
+                        success: function(data_cast){
+                            console.log(filmid);
+                            var risultato = data_cast.cast;
+                            var stringa_cast = '';
+                            //var casting = risultato.cast;
+                            if (risultato.length > 0) {
+                                if (risultato.length < 5) {
+                                    for (var i = 0; i < risultato.length; i++) {
+                                        stringa_cast = stringa_cast + risultato[i].name + ', ';
+                                    }
+                                } else {
+                                    for (var i = 0; i < 5; i++) {
+                                        stringa_cast = stringa_cast + risultato[i].name + ', ';
+                                    }
+                                }
+                            } /*else {
+                                alert('Nessun casting presente');
+                            }*/
+                            $('.card-img-overlay[data_id="' + filmid + '"]').find('.cast').append(stringa_cast)
+                            console.log('Stringa cast: ' + stringa_cast);
+                            //listaCast(risultato, film_id);
+                        },
+                        error: function() {
+                            alert('Nessun cast trovato per: ' + titolo);
+                        }
+                    });
+                    // Fine istruzioni per recuperare il cast della serie tv
+                }
+            }
+    }
+    // Funzione per la creazione della lista di 5 nomi e cognomi del cast di un film e di una serie tv
+    function stampaCast(data, url_suffisso) {
+            var stringa_cast = '';
+            var film = data.results;
+            for (var i = 0; i < film.length; i++) {
+                // Variabile che memorizza l'id del film o della serie tv
+                var filmid = film[i].id;
+                console.log('Id del ' + (i + 1) + '° film: ' + filmid);
+                // Chiamata ajax per recuperare i cast
+                if (url_suffisso == 'search/movie') { // Controllo se è un film
+                    // Inizio istruzioni per recuperare il cast del film
+                    var urlcastfilm = 'movie/'+ filmid +'/credits';
+                    $.ajax({
+                        url: api_url_base + urlcastfilm,
+                        'data': {
+                            'api_key': api_key,
+                            'language': 'it-IT'
+                        },
+                        method: 'GET',
+                        success: function(data_cast){
+                            console.log(filmid);
+                            var risultato = data_cast.cast;
 
+                            if (risultato.length > 0) {
+                                if (risultato.length < 5) {
+                                    for (var i = 0; i < risultato.length; i++) {
+                                        stringa_cast = stringa_cast + risultato[i].name + ', ';
+                                    }
+                                } else {
+                                    for (var i = 0; i < 5; i++) {
+                                        stringa_cast = stringa_cast + risultato[i].name + ', ';
+                                    }
+                                }
+                            } /*else {
+                                alert('Nessun casting presente');
+                            }*/
+                            $('.card-img-overlay[data-id="' + filmid + '"]').find('.cast').append(stringa_cast)
+                            console.log('Stringa cast: ' + stringa_cast);
+                            //listaCast(risultato, filmid);
+                        },
+                        error: function() {
+                            alert('Nessun cast trovato per: ' + titolo);
+                        }
+                    });
+                    // Fine istruzioni per recuperare il cast del film
+                } else { // E' unsa serie tv
+                    // Inizio istruzioni per recuperare il cast della serie tv
+                    var urlcastserietv = 'tv/'+ filmid +'/credits';
+                    $.ajax({
+                        url: api_url_base + urlcastserietv,
+                        'data': {
+                            'api_key': api_key,
+                            'language': 'it-IT'
+                        },
+                        method: 'GET',
+                        success: function(data_cast){
+                            console.log(filmid);
+                            var risultato = data_cast.cast;
+                            var stringa_cast = '';
+                            //var casting = risultato.cast;
+                            if (risultato.length > 0) {
+                                if (risultato.length < 5) {
+                                    for (var i = 0; i < risultato.length; i++) {
+                                        stringa_cast = stringa_cast + risultato[i].name + ', ';
+                                    }
+                                } else {
+                                    for (var i = 0; i < 5; i++) {
+                                        stringa_cast = stringa_cast + risultato[i].name + ', ';
+                                    }
+                                }
+                            } /*else {
+                                alert('Nessun casting presente');
+                            }*/
+                            $('.card-img-overlay[data-id="' + filmid + '"]').find('.cast').append(stringa_cast)
+                            console.log('Stringa cast: ' + stringa_cast);
+                            //listaCast(risultato, film_id);
+                        },
+                        error: function() {
+                            alert('Nessun cast trovato per: ' + titolo);
+                        }
+                    });
+                    // Fine istruzioni per recuperare il cast della serie tv
+                }
             }
     }
     // Funzione per associare la bandierina alla lingua restituita dall'API

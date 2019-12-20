@@ -206,16 +206,16 @@ $(document).ready(function(){
     }
     // Funzione per la creazione della lista di 5 nomi e cognomi del cast di un film e di una serie tv
     function stampaCast(data, url_suffisso) {
-            var stringa_cast = '';
             var film = data.results;
-            for (var i = 0; i < film.length; i++) {
+            for (let i = 0; i < film.length; i++) {
+                let stringa_cast = '';
                 // Variabile che memorizza l'id del film o della serie tv
-                var filmid = film[i].id;
+                let filmid = film[i].id;
                 console.log('Id del ' + (i + 1) + '° film: ' + filmid);
                 // Chiamata ajax per recuperare i cast
                 if (url_suffisso == 'search/movie') { // Controllo se è un film
                     // Inizio istruzioni per recuperare il cast del film
-                    var urlcastfilm = 'movie/'+ filmid +'/credits';
+                    let urlcastfilm = 'movie/'+ filmid +'/credits';
                     $.ajax({
                         url: api_url_base + urlcastfilm,
                         'data': {
@@ -225,15 +225,14 @@ $(document).ready(function(){
                         method: 'GET',
                         success: function(data_cast){
                             console.log(filmid);
-                            var risultato = data_cast.cast;
-
+                            let risultato = data_cast.cast;
                             if (risultato.length > 0) {
                                 if (risultato.length < 5) {
-                                    for (var i = 0; i < risultato.length; i++) {
+                                    for (let i = 0; i < risultato.length; i++) {
                                         stringa_cast = stringa_cast + risultato[i].name + ', ';
                                     }
                                 } else {
-                                    for (var i = 0; i < 5; i++) {
+                                    for (let i = 0; i < 5; i++) {
                                         stringa_cast = stringa_cast + risultato[i].name + ', ';
                                     }
                                 }
@@ -251,7 +250,7 @@ $(document).ready(function(){
                     // Fine istruzioni per recuperare il cast del film
                 } else { // E' unsa serie tv
                     // Inizio istruzioni per recuperare il cast della serie tv
-                    var urlcastserietv = 'tv/'+ filmid +'/credits';
+                    let urlcastserietv = 'tv/'+ filmid +'/credits';
                     $.ajax({
                         url: api_url_base + urlcastserietv,
                         'data': {
@@ -261,16 +260,14 @@ $(document).ready(function(){
                         method: 'GET',
                         success: function(data_cast){
                             console.log(filmid);
-                            var risultato = data_cast.cast;
-                            var stringa_cast = '';
-                            //var casting = risultato.cast;
+                            let risultato = data_cast.cast;
                             if (risultato.length > 0) {
                                 if (risultato.length < 5) {
-                                    for (var i = 0; i < risultato.length; i++) {
+                                    for (let i = 0; i < risultato.length; i++) {
                                         stringa_cast = stringa_cast + risultato[i].name + ', ';
                                     }
                                 } else {
-                                    for (var i = 0; i < 5; i++) {
+                                    for (let i = 0; i < 5; i++) {
                                         stringa_cast = stringa_cast + risultato[i].name + ', ';
                                     }
                                 }

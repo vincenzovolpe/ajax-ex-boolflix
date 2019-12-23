@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    // Dichiarazione variabili glibali
     // Percorso base delle API
     var api_url_base = 'https://api.themoviedb.org/3/';
     // Api Key personale per accedere alle API
@@ -7,6 +8,10 @@ $(document).ready(function(){
     var urlfilm  = 'search/movie';
     // Parte finale url per la ricerca delle serie tv
     var urltv = 'search/tv';
+    // Parte finale url per la ricerca del cast dei film (senza id, che sarà aggiunto tra gli slash in cercaCast())
+    var urlcastfilm = 'movie//credits';
+    // Parte finale url per la ricerca del cast delle serie tv (senza id, che sarà aggiunto tra gli slash in cercaCast())
+    var urlcastserie = 'tv//credits';
     // Percorso base delle immagini di TMDB
     var img_url_base = 'https://image.tmdb.org/t/p/';
     // Dimensione del poster del Film
@@ -44,6 +49,7 @@ $(document).ready(function(){
             alert('Inserisci la query di ricerca');
         }
     }
+
     // Funzione per ricercare un film o una serie tv (in base alla variabile url) inserito nella barra di ricerca interrogando la relativa API
     function cercaFilm(testo_ricerca, url_suffisso) {
             $.ajax({
@@ -58,7 +64,8 @@ $(document).ready(function(){
                     // Controlla se la chiamata restituisce qualche risultato
                     if(data.total_results > 0) {
                         stampaFilm(data, url_suffisso);
-                        stampaCast(data, url_suffisso);
+                        // Chiamo la funzione che mi restituisce il cast dei film passandogli l'url relativo
+                        cercaCast(data, url_suffisso);
                     } else { // Faccio un alert se la chiamata ajax non restituisce risultati
                         if (url_suffisso == 'search/movie') { // Film non trovati
                             alert('Nessun risultato trovato per i film ' + testo_ricerca);
@@ -72,11 +79,33 @@ $(document).ready(function(){
                 }
             });
     }
+
+    // Funzione per ricercare un film o una serie tv (in base alla variabile url) inserito nella barra di ricerca interrogando la relativa API
+    function cercaCast(data, url_suffisso) {
+            var film = data.results;
+            var urlcast;
+            var posizione;
+            for (var i = 0; i < film.length; i++) {
+                // Variabile che memorizza l'id del film o della serie tv
+                // Uso la dichiarazione con let, in quanto se uso var mi ripete sempre lo stesso id
+                let filmid = film[i].id;
+                // Chiamata ajax per recuperare i cast
+                if (url_suffisso == 'search/movie') { // Controllo se è un film
+                    // Imposto la posizione nella stringa dell' url in cui inserire l'id del film di cui cercare il cast
+                    posizione = 6;
+                    apiCast(filmid, posizione, urlcastfilm);
+                } else { // E' unsa serie tv
+                    // Imposto la posizione nella stringa dell' url in cui inserire l'id della serie tv di cui cercare il cast
+                    posizione = 3;
+                    apiCast(filmid, posizione,urlcastserie);
+                }
+            }
+    }
+
     // Funzione per la stampa dei film restituiti dalla chiamata Ajax alle API
     function stampaFilm(data, url_suffisso) {
             var film = data.results;
             // Variabile con all'interno lalista dei cast per film
-            //var stringa_cast = '';
             for (var i = 0; i < film.length; i++) {
                 // Chiamo la funzione per creare la bandierina in base  alla lingua del film
                 var bandiera = creaBandiera(film[i].original_language);
@@ -116,7 +145,6 @@ $(document).ready(function(){
                     voto: creaPuntiStelle(film[i].vote_average),
                     img_url: poster,
                     overview: overview,
-                    //cast: stringa_cast
                 }
                 // Creo il template
                 var html = template_function(variabili);
@@ -128,83 +156,48 @@ $(document).ready(function(){
                 }
             }
     }
+
+    // Funzione che lancia la chiamata ajax alle API per trovare il cast di film o serie tv in base all' urlcast
+    function apiCast(filmid, posizione, url) {
+        urlcast = [url.slice(0, posizione), filmid, url.slice(posizione)].join('');
+        $.ajax({
+            url: api_url_base + urlcast,
+            'data': {
+                'api_key': api_key,
+                'language': 'it-IT'
+            },
+            method: 'GET',
+            success: function(data_cast){
+                var risultato = data_cast.cast;
+                stampaCast(risultato, filmid);
+            },
+            error: function() {
+                alert('Nessun cast trovato');
+            }
+        });
+    }
+
     // Funzione per la creazione della lista di 5 nomi e cognomi del cast di un film e di una serie tv
-    function stampaCast(data, url_suffisso) {
-            var film = data.results;
-            for (let i = 0; i < film.length; i++) {
-                let stringa_cast = '';
-                // Variabile che memorizza l'id del film o della serie tv
-                let filmid = film[i].id;
-                console.log('Id del ' + (i + 1) + '° film: ' + filmid);
-                // Chiamata ajax per recuperare i cast
-                if (url_suffisso == 'search/movie') { // Controllo se è un film
-                    // Inizio istruzioni per recuperare il cast del film
-                    let urlcastfilm = 'movie/'+ filmid +'/credits';
-                    $.ajax({
-                        url: api_url_base + urlcastfilm,
-                        'data': {
-                            'api_key': api_key,
-                            'language': 'it-IT'
-                        },
-                        method: 'GET',
-                        success: function(data_cast){
-                            console.log(filmid);
-                            let risultato = data_cast.cast;
-                            if (risultato.length > 0) {
-                                if (risultato.length < 5) {
-                                    for (let i = 0; i < risultato.length; i++) {
-                                        stringa_cast = stringa_cast + risultato[i].name + ', ';
-                                    }
-                                } else {
-                                    for (let i = 0; i < 5; i++) {
-                                        stringa_cast = stringa_cast + risultato[i].name + ', ';
-                                    }
-                                }
-                            } /*else {
-                                alert('Nessun casting presente');
-                            }*/
-                            $('.card-img-overlay[data-id="' + filmid + '"]').find('.cast').append(stringa_cast.slice(0, -1));
-                        },
-                        error: function() {
-                            alert('Nessun cast trovato per: ' + titolo);
-                        }
-                    });
-                    // Fine istruzioni per recuperare il cast del film
-                } else { // E' unsa serie tv
-                    // Inizio istruzioni per recuperare il cast della serie tv
-                    let urlcastserietv = 'tv/'+ filmid +'/credits';
-                    $.ajax({
-                        url: api_url_base + urlcastserietv,
-                        'data': {
-                            'api_key': api_key,
-                            'language': 'it-IT'
-                        },
-                        method: 'GET',
-                        success: function(data_cast){
-                            let risultato = data_cast.cast;
-                            if (risultato.length > 0) {
-                                if (risultato.length < 5) {
-                                    for (let i = 0; i < risultato.length; i++) {
-                                        stringa_cast = stringa_cast + risultato[i].name + ', ';
-                                    }
-                                } else {
-                                    for (let i = 0; i < 5; i++) {
-                                        stringa_cast = stringa_cast + risultato[i].name + ', ';
-                                    }
-                                }
-                            } /*else {
-                                alert('Nessun casting presente');
-                            }*/
-                            $('.card-img-overlay[data-id="' + filmid + '"]').find('.cast').append(stringa_cast.slice(0, -1));
-                        },
-                        error: function() {
-                            alert('Nessun cast trovato per: ' + titolo);
-                        }
-                    });
-                    // Fine istruzioni per recuperare il cast della serie tv
+    function stampaCast(risultato, filmid) {
+        var stringa_cast = '';
+        if (risultato.length > 0) {
+            if (risultato.length < 5) {
+                for (var i = 0; i < risultato.length; i++) {
+                    stringa_cast = stringa_cast + risultato[i].name + ', ';
+                }
+            } else {
+                for (var i = 0; i < 5; i++) {
+                    stringa_cast = stringa_cast + risultato[i].name + ', ';
                 }
             }
+            // Elimino l'ultima virgola + lo spazio dalla stringa
+            stringa_cast = stringa_cast.slice(0, -2);
+            $('.card-img-overlay[data-id="' + filmid + '"]').find('.cast').append(stringa_cast);
+        } /*else {
+            alert('Nessun casting presente');
+        }*/
     }
+
     // Funzione per associare la bandierina alla lingua restituita dall'API
     function creaBandiera(flag) {
         switch(flag) {
@@ -224,6 +217,7 @@ $(document).ready(function(){
              return flag;
         }
     }
+
     // Funzione che crea le stelline che indicano la  valutazione da 1  a 5
     function creaPuntiStelle(voto) {
         var stelle = '';
@@ -240,6 +234,7 @@ $(document).ready(function(){
         }
         return stelle;
     }
+    
     // Funzione che converti i punti restiuti dalle APi in punti per le stelline da creare
     function convertiPunti(voto) {
         // il voto decimale ricevuto lo divido per 2 e poi lo arrotondo per eccesso (in questo modo ottengo un numero da 1 a 5)

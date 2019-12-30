@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
         <script src="main.js" charset="utf-8"></script>
@@ -13,8 +14,27 @@
     <body>
         <header>
             <div class="container-fluid">
-                <nav class="navbar navbar-expand-sm">
+                <nav class="navbar navbar-expand-md navbar-dark">
                     <a class="navbar-brand" href="#"><h1>BOOLFLIX</h1></a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                        <ul class="navbar-nav">
+                          <li class="nav-item">
+                            <a id="filtro_film" class="nav-link nascosto" href="#">Film</a>
+                          </li>
+                          <select id="genere_film" class="nascosto">
+                              <option value="">Scegli un genere di film</option>
+                          </select>
+                          <li class="nav-item">
+                            <a id="filtro_serie" class="nav-link nascosto" href="#">Serie TV</a>
+                          </li>
+                          <select id="genere_serie" class="nascosto">
+                              <option value="">Scegli un genere di serie TV</option>
+                          </select>
+                        </ul>
+                    </div>
                     <div class="form-inline">
                         <input class="form-control mr-sm-2 cerca_film" type="text" placeholder="Inserisci il titolo di un film">
                         <button class="btn btn-success btn_ricerca">Cerca</button>
@@ -34,12 +54,14 @@
                     <img class="card-img-top" src="{{img_url}}" alt="{{titolo}}">
                     <div class="card-img-overlay" data-id="{{id}}">
                         <h4 class="card-title text-center">{{titolo}}</h4>
-                        <p class="card-text"><span>Tipo: </span>{{tipo}}</p>
+                        <p class="card-text tipo"><span>Tipo: </span>{{tipo}}</p>
                         <p class="card-text"><span>Titolo originale: </span>{{titolo_originale}}</p>
                         <p class="card-text"><span>Lingua: </span>{{{stato}}}</p>
                         <p class="card-text"><span>Voto: </span>{{{voto}}}</p>
-                        <p class="card-text text-justify"><span>Overview: </span>{{overview}}</p>
-                        <p class="card-text"><span>Cast: </span><span class="cast"></span></p>
+                        <p class="card-text text-justify overview"><span>Overview: </span>{{overview}}</p>
+                        <p class="card-text casting"><span>Cast: </span><span class="cast"></span></p>
+                        <p class="card-text genere"><span>Genere: </span><span class="genre"></span>
+                        </p>
                     </div>
                 </div>
         </script>

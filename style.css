@@ -12,15 +12,7 @@ header {
     background-color: black;
 }
 
-.navbar {
-    justify-content: space-between;
-}
-
-.navbar-brand:hover {
-    color: red;
-}
-
-.navbar-brand {
+.navbar-dark h1 {
     color: red;
 }
 
@@ -55,7 +47,7 @@ header {
   overflow-y: auto;
 }
 
-.card-title, .card-img-overlay span:not(.cast) {
+.card-title, .card-img-overlay span:not(.genre){
     font-weight: 800;
 }
 
@@ -63,6 +55,13 @@ header {
     margin-bottom: -1rem;
 }
 
+.nascosto {
+    display: none;
+}
+
+.visibile {
+    display: block;
+}
 
 @media (min-width: 576px) {
     .card-columns {

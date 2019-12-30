@@ -6,10 +6,7 @@
 
 body {
     background-color: #696969;
-}
-
-header {
-    background-color: black;
+    padding-top: 72px;
 }
 
 .navbar-dark h1 {

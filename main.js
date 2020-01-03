@@ -135,7 +135,7 @@ $(document).ready(function(){
             // Verifico se il campo tipo della card contiene la selezione della tendina dei generi dei film. Il metodo toggle () nasconde la card che non contiene come tipo la parola Film.
             $('.film:visible').filter(function(){
                 // Memorizzo nella variabile percorso il selettore del tipo in cui cercare
-                var percorso = $(this).children('.card-img-overlay').children('.genere').children('.genre');
+                var percorso = $(this).children('.flip-box-inner').children('.card-img-overlay').children('.genere').children('.genre');
                 // Trasformo in array la stringa dei generi relativa a questo film o serie tv
                 var percorso_text = percorso.text().toLocaleLowerCase().split(', ');
                 // Mostro il film o la  serie tv se l'array dei generi creato in precedenza contiene il genere selezionato nella tendina

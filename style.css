@@ -29,19 +29,35 @@ body {
 }
 
 .card-img-overlay {
-    opacity: 0;
     transition: .5s ease;
     background-color: black;
     border: 1px solid;
-    opacity: 0;
     color: white;
     overflow-y: auto;
+    transform: rotateY(180deg);
+    backface-visibility: hidden;
 }
 
-.film:hover .card-img-overlay:hover {
-  opacity: 1;
+.flip-box-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.flip-box-front {
+    border: 1px solid white;
+}
+
+.card {
+    background-color: transparent;
+    perspective: 1000px;
+}
+
+.card:hover .flip-box-inner{
   cursor: pointer;
-  overflow-y: auto;
+  transform: rotateY(180deg);
 }
 
 .card-title, .card-img-overlay span:not(.genre){

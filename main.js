@@ -70,12 +70,14 @@ $(document).ready(function(){
 
     // Evento click sul bottone con la lente
     $(document).on('click', '.btn_ricerca', function(){
+        $('.cerca_film').blur();
         checkLingua();
     });
 
     // Evento enter nell'input della barra di ricerca
     $(document).on('keypress', '.cerca_film', function(){
     	if(event.which == '13'){
+            $('.cerca_film').blur();
             checkLingua();
     	}
     });
@@ -146,7 +148,7 @@ $(document).ready(function(){
         // Verifico se il campo tipo della card contiene la parola Film. Il metodo toggle () nasconde la card che non contiene come tipo la parola Film.
         $('.film').filter(function(){
             // Memorizzo nella variabile percorso il selettore del tipo in cui cercare
-            var percorso = $(this).children('.card-img-overlay').children('.tipo');
+            var percorso = $(this).children('.flip-box-inner').children('.card-img-overlay').children('.tipo');
             $(this).toggle(percorso.text().indexOf(tipo) > -1);
         })
         // Nascondo la select dei generi delle Serie TV

@@ -5,7 +5,9 @@ $(document).ready(function(){
     // Api Key personale per accedere alle API
     var api_key = 'f5a961c5e8b2e2e5f35c17c6f3fd8ef6';
     // Imposto la lingua di default dei risultati di ricerca di film e serie tv
-    var linguaggio = 'it'
+    var linguaggio = 'it';
+    var risultati_film;
+    var risultati_serie;
     // Variabile che memorizza il numero di pagine restituite nella ricerca di un film
     var pagine_film;
     // Variabile che memorizza il numero di pagine restituite nella ricerca di una serie tv
@@ -28,6 +30,10 @@ $(document).ready(function(){
     var urlgenerefilm = 'genre/movie/list';
     // Parte finale url per la ricerca del genere delle serie tv
     var urlgenereserie = 'genre/tv/list';
+    // Variabile che contiene la lista dei possibili voti dei film o delle serie TV
+    var lista_voti = ["5 stelle","4 stelle","3 stelle","2 stelle","1 stella","Nessun voto"];
+    // Variabile che contiene il punteggio da 0 a 5 diun fillm o serie tv
+    var punteggio;
     // Variabile che memorizza la lista dei generi dei film
     var lista_genere_film;
     // Variabile che memorizza la lista dei generi delle serie TV
@@ -43,10 +49,12 @@ $(document).ready(function(){
 
     // Chiamo la funzione che lancia la chiamata ajax alle API per trovare la lista dei generi dei film
     apiGenere(urlgenerefilm);
-    // Chiamo la funzione che lancia la chiamata ajax alle API per trovare la lista dei generi delleserie TV
+    // Chiamo la funzione che lancia la chiamata ajax alle API per trovare la lista dei generi delle serie TV
     apiGenere(urlgenereserie);
     // Chiamo la funzione che lancia la chiamata ajax alle API per trovare la lista delle lingue utilizzate in tutto TMDb.
     apiLingua(url_linguaggi);
+    // Chiamo la funzione che crea le select dei voti dei film e delle serie TV
+    creaListaVoti(lista_voti);
 
     // Evento focus sul campo di ricerca
     $('.cerca_film').focus(function(){
@@ -56,6 +64,10 @@ $(document).ready(function(){
         $('#genere_film').removeClass('visibile');
         // Nascondo la select dei generi delle Serie TV
         $('#genere_serie').removeClass('visibile');
+        // Nascondo la select dei voti dei film
+        $('#voto_film').removeClass('visibile');
+        // Nascondo la select dei voti delle Serie TV
+        $('#voto_serie').removeClass('visibile');
         // Faccio scomparire il filtro di ricerca per i film
         $('#filtro_film').removeClass('visibile');
         // Faccio scomparire il filtro di ricerca per le serie tv
@@ -85,42 +97,98 @@ $(document).ready(function(){
     // Evento click sul filtro Film
     $(document).on('click', '#filtro_film', function(){
         // Chiamo la funzione che mi filtra i Film
-        filtroTipo('Film', 'genere_film', 'genere_serie');
+        filtroTipo('Film', 'genere_film', 'genere_serie', 'voto_serie', 'voto_film');
     });
 
     // Evento click sul filtro Serie TV
     $(document).on('click', '#filtro_serie', function(){
         // Chiamo la funzione che mi filtra le Serie TV
-        filtroTipo('Serie TV', 'genere_serie', 'genere_film');
+        filtroTipo('Serie TV', 'genere_serie', 'genere_film', 'voto_film', 'voto_serie');
     });
 
     // Evento scelta opzione tendina genere Film
     $('#genere_film').change(function(){
+        // Chiamo la funzione che mi mostra il filtro dei voti dei film
+        filtroTipo('Film', 'voto_film', 'voto_serie');
         // Chiamo la funzione che mi filtra i generi dei film in base all'opzione scelta nella select
         filtroGenere('genere_film', 'Film');
     });
 
     // Evento scelta opzione tendina genere serie TV
     $('#genere_serie').change(function(){
+        // Chiamo la funzione che mi mostra il filtro dei voti delle serie TV
+        filtroTipo('Serie TV', 'voto_serie', 'voto_film');
         // Chiamo la funzione che mi filtra i generi delle serie TV in base all'opzione scelta nella select
         filtroGenere('genere_serie', 'Serie TV');
+    });
+
+    // Evento scelta opzione tendina punteggio Film
+    $('#voto_film').change(function(){
+        // Chiamo la funzione che mi filtra i generi delle serie TV in base all'opzione scelta nella select
+        filtroVoto('voto_film', 'Film', 'genere_film');
+    });
+
+    // Evento scelta opzione tendina punteggio serie TV
+    $('#voto_serie').change(function(){
+        // Chiamo la funzione che mi filtra i generi delle serie TV in base all'opzione scelta nella select
+        filtroVoto('voto_serie', 'Serie TV', 'genere_serie');
     });
 
     // Funzione che popola le select usate nell'applicazione (per filtrare i generi dei film e selle serie tv e  i linguaggi)
     function creaSelect(select, lista, tipo) {
         var valore_select;
         var testo_select;
-        // Ciclo la lista dei generi dei film o serie tv e creo un opzione della select con il nome del genere e il value con l'id del genere
+        // Ciclo la lista e creo un opzione della select assegnando il valore e il testo in base al tipo ricevuto
         for (var i = 0; i < lista.length; i++) {
-            if (tipo == 'linguaggi') {
-                valore_select = lista[i].iso_639_1;
-                testo_select = lista[i].english_name;
-                //alert('Sto creando la select delle lingue')
-            } else {
-                valore_select = lista[i].name.toLowerCase();
-                testo_select = lista[i].name;
+            switch(tipo) {
+              case 'linguaggi':
+                  valore_select = lista[i].iso_639_1;
+                  testo_select = lista[i].english_name;
+                break;
+              case 'film':
+                  valore_select = lista[i].name.toLowerCase();
+                  testo_select = lista[i].name;
+                break;
+              case 'voti':
+                  valore_select = lista.length - (i+1);
+                  testo_select = lista[i];
             }
             $('#' + select).append('<option value="' + valore_select + '">' + testo_select + '</option>');
+        }
+    }
+
+    // Funzione che crea il filtro per visualizzare solo i film o solo le serie TV in base al tipo
+    function filtroVoto(voto, tipo, genere) {
+        // Recupero il voto selezionato dall'utente
+        var voto_selezionato = $('#' + voto).val();
+        // Recupero il genere selezionato dall'utente
+        var genere_selezionato = $('#' + genere).val();
+        if (voto_selezionato == '') {
+            filtroTipo(tipo);
+            // Resetto la select_uno impostando la selezione sulla prima voce
+            $('#' + genere).prop('selectedIndex',0);
+        } else if (genere_selezionato == '') {
+            filtroTipo(tipo);
+            // Verifico se il campo tipo della card contiene la selezione della tendina dei generi dei film. Il metodo toggle () nasconde la card che non contiene come tipo la parola Film.
+            $('.film:visible').filter(function(){
+                // Memorizzo nella variabile voto_film il voto del film attuale presente nel data attribute relativo
+                var voto_film = $(this).children('.flip-box-inner').children('.card-img-overlay').children('.punteggio').children('.voto').attr("data-voto");
+                // Mostro il film o la  serie tv se l'array dei generi creato in precedenza contiene il genere selezionato nella tendina
+                $(this).toggle(voto_film == voto_selezionato);
+            })
+        } else {
+            filtroTipo(tipo);
+            // Verifico se il campo tipo della card contiene la selezione della tendina dei generi dei film. Il metodo toggle () nasconde la card che non contiene come tipo la parola Film.
+            $('.film:visible').filter(function(){
+                // Memorizzo nella variabile voto_film il voto del film attuale presente nel data attribute relativo
+                var voto_film = $(this).children('.flip-box-inner').children('.card-img-overlay').children('.punteggio').children('.voto').attr("data-voto");
+                // Memorizzo nella variabile percorso il selettore del tipo in cui cercare
+                var percorso = $(this).children('.flip-box-inner').children('.card-img-overlay').children('.genere').children('.genre');
+                // Trasformo in array la stringa dei generi relativa a questo film o serie tv
+                var percorso_text = percorso.text().toLocaleLowerCase().split(', ');
+                // Mostro il film o la  serie tv se l'array dei generi creato in precedenza contiene il genere selezionato nella tendina
+                $(this).toggle(percorso_text.includes(genere_selezionato) != false && voto_film == voto_selezionato);
+            })
         }
     }
 
@@ -144,18 +212,22 @@ $(document).ready(function(){
         }
     }
     // Funzione che crea il filtro per visualizzare solo i film o solo le serie TV in base al tipo
-    function filtroTipo(tipo, select_uno, select_due) {
+    function filtroTipo(tipo, select_uno, select_due, select_tre, select_quattro) {
         // Verifico se il campo tipo della card contiene la parola Film. Il metodo toggle () nasconde la card che non contiene come tipo la parola Film.
         $('.film').filter(function(){
             // Memorizzo nella variabile percorso il selettore del tipo in cui cercare
             var percorso = $(this).children('.flip-box-inner').children('.card-img-overlay').children('.tipo');
             $(this).toggle(percorso.text().indexOf(tipo) > -1);
         })
-        // Nascondo la select dei generi delle Serie TV
+        // Nascondo la select dei generi (dei Film o delle serie TV in base ai valori passati)
         $('#' + select_due).removeClass('visibile');
-        // Resetto la select impostando la selezione sulla prima voce
+        // Nascondo la select dei voti (dei Film o delle serie TV in base ai valori passati)
+        $('#' + select_tre).removeClass('visibile');
+        // Resetto la select_uno impostando la selezione sulla prima voce
         $('#' + select_uno).prop('selectedIndex',0);
-        // Rendo visibile la select dei generi dei Film
+        // Resetto la select_tre impostando la selezione sulla prima voce
+        $('#' + select_quattro).prop('selectedIndex',0);
+        // Rendo visibile la select dei generi (dei Film o delle serie TV in base ai valori passati)
         $('#' + select_uno).addClass('visibile');
     }
 
@@ -163,13 +235,15 @@ $(document).ready(function(){
     function checkLingua(testo_ricerca) {
         // Controllo se è stata selezionata una lingua
         if ($('#scelta_lingua').val() != '') {
-            // Aggiorno la variabile del linguaggio che sarà un paramentro nella ricerca Ajax
+            // Aggiorno la variabile del linguaggio che sarà un parametro nella ricerca Ajax
             linguaggio = $('#scelta_lingua').val();
             // Chiamo la funzione che controlla il teso inserito nella barra di ricerca
             checkTesto($('.cerca_film').val());
         } else {
             alert('Selezionare una lingua, prima di effettuare la ricerca')
         }
+        // Resetto la select della linguaimpostando la selezione sulla prima voce
+        $('#scelta_lingua').prop('selectedIndex',0);
     }
 
     // Funzione che  prende il testo in input e lo controlla chiamando le relative funzioni se il testo è correttamente valorizzato
@@ -177,17 +251,24 @@ $(document).ready(function(){
         // Controllo se è stato inserito il testo nella barra di ricerca
         if (testo_ricerca.length != 0) {
             // Chiamo la funzione che mi restituisce il numero di pagine di risultati del film cercato
-            numPagine(testo_ricerca, urlfilm);
+            var risultato_pagine_film = numPagine(testo_ricerca, urlfilm);
             // Chiamo la funzione che mi restituisce il numero di pagine di risultati del film cercato
-            numPagine(testo_ricerca, urltv);
+            var risultato_pagine_serie = numPagine(testo_ricerca, urltv);
+            // Attendo che le due funzioni numPagine finiscono
+            $.when(risultato_pagine_film, risultato_pagine_serie).done(function(){
+                // Controllo se la ricerca dei film e delle serie non restituisce risultati
+                if (risultati_film == false && risultati_serie == false) {
+                        alert('Nessun risultato trovato per la ricerca inserita: ' + testo_ricerca);
+                }
+            });
         } else {
             alert('Inserisci la query di ricerca');
         }
     }
 
-    // Funzione che restituisce il numero totale di pagine di una ricerca di un film e di unSerie
+    // Funzione che restituisce il numero totale di pagine di una ricerca di un film e di una serie TV
     function numPagine(testo_ricerca, url_suffisso) {
-            $.ajax({
+            return $.ajax({
                 url: api_url_base + url_suffisso,
                 'data': {
                     'api_key': api_key,
@@ -196,20 +277,28 @@ $(document).ready(function(){
                 },
                 method: 'GET',
                 success: function(data) {
+                    if (data.total_pages > 0) {
                         if (url_suffisso == 'search/movie') {
+                            risultati_film = true;
                             pagine_film = data.total_pages;
-                            console.log('Numero di pagine per la ricerca del  film: ' + data.total_pages);
                             // Chiamo la funzione che mi restituisce i film in base all' input nella searchbar
                             cercaFilm(testo_ricerca, url_suffisso, pagine_film, pagina_film);
                         } else {
+                            risultati_serie = true;
                             pagine_serie = data.total_pages;
-                            console.log('Numero di pagine per la ricerca della serie tv: ' + data.total_pages);
                             // Chiamo la funzione che mi restituisce le serie tv in base all' input nella searchbar
                             cercaFilm(testo_ricerca, url_suffisso, pagine_serie, pagina_serie);
                         }
+                    } else {
+                        if (url_suffisso == 'search/movie') {
+                            risultati_film = false;
+                        } else {
+                            risultati_serie = false;
+                        }
+                    }
                 },
                 error: function() {
-                    alert('Error');
+                    alert('Qualcosa non ha funzionato');
                 }
             });
     }
@@ -249,11 +338,11 @@ $(document).ready(function(){
                     if (url_suffisso == 'search/movie') { // Film non trovati
                         // Faccio scomparire il filtro di ricerca per i film
                         $('#filtro_film').removeClass('visibile');
-                        alert('Nessun risultato trovato per i film ' + testo_ricerca);
+                        //alert('Nessun risultato trovato per i film ' + testo_ricerca);
                     } else { // Serie tv non trovate
                         // Faccio scomparire il filtro di ricerca per le serie tv
                         $('#filtro_serie').removeClass('visibile');
-                        alert('Nessun risultato trovato per le serie tv ' + testo_ricerca);
+                        //alert('Nessun risultato trovato per le serie tv ' + testo_ricerca);
                     }
                 }
             },
@@ -365,6 +454,7 @@ $(document).ready(function(){
                     titolo_originale: titolo_originale,
                     stato: bandiera,
                     voto: creaPuntiStelle(film[i].vote_average),
+                    punteggio: punteggio,
                     img_url: poster,
                     overview: overview
                 }
@@ -412,6 +502,13 @@ $(document).ready(function(){
                 alert('Nessun cast trovato');
             }
         });
+    }
+
+    // Funzione che crea la lista dei voti dei film e delle serie tv
+    function creaListaVoti(lista_voti) {
+            // Chiamo la funzione che mi crea la select per filtrare i voti dei film e delle serie tv
+            creaSelect('voto_film', lista_voti, 'voti');
+            creaSelect('voto_serie', lista_voti, 'voti');
     }
 
     // Funzione che crea la lista dei generi dei film e  la lista dei generi della serie tv
@@ -516,10 +613,12 @@ $(document).ready(function(){
         var stelle = '';
         if (voto != 0) {
             // Chiamo la funzione che converte i punti nell'intervallo da 1 a 5
-            var num_convertito = convertiPunti(voto);
+            punteggio = convertiPunti(voto);
+        } else {
+            punteggio = 0;
         }
         for (var i = 0; i < 5; i++) {
-            if (i < num_convertito) {
+            if (i < punteggio) {
                 stelle = stelle + '<i class="fas fa-star yellow"></i>';
             } else {
                 stelle = stelle + '<i class="fas fa-star grey"></i>';

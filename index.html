@@ -33,10 +33,22 @@
                         <option value="">Scegli un genere di film</option>
                     </select>
                     <li class="nav-item">
+                        <a id="punti_film" class="nav-link nascosto" href="#">Voto </a>
+                    </li>
+                    <select id="voto_film" class="nascosto">
+                        <option value="">Scegli la votazione del film</option>
+                    </select>
+                    <li class="nav-item">
                         <a id="filtro_serie" class="nav-link nascosto" href="#">Serie TV</a>
                     </li>
                     <select id="genere_serie" class="nascosto">
                         <option value="">Scegli un genere di serie TV</option>
+                    </select>
+                    <li class="nav-item">
+                        <a id="punti_serie" class="nav-link nascosto" href="#">Voto </a>
+                    </li>
+                    <select id="voto_serie" class="nascosto">
+                        <option value="">Scegli la votazione della serie TV</option>
                     </select>
                 </ul>
                 <a id="filtro_film" class="nav-link nascosto" href="#">Film</a>
@@ -67,7 +79,7 @@
                         <p class="card-text tipo"><span>Tipo: </span>{{tipo}}</p>
                         <p class="card-text"><span>Titolo originale: </span>{{titolo_originale}}</p>
                         <p class="card-text"><span>Lingua: </span>{{{stato}}}</p>
-                        <p class="card-text"><span>Voto: </span>{{{voto}}}</p>
+                        <p class="card-text punteggio"><span class="voto" data-voto={{punteggio}}>Voto: </span>{{{voto}}}</p>
                         <p class="card-text text-justify overview"><span>Overview: </span>{{overview}}</p>
                         <p class="card-text casting"><span>Cast: </span><span class="cast"></span></p>
                         <p class="card-text genere"><span>Genere: </span><span class="genre"></span>

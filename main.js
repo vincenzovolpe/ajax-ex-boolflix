@@ -107,6 +107,8 @@ $(document).ready(function(){
         $('#language').addClass('visibile');
         // Faccio comparire il filtro della lingua
         $('#scelta_lingua').addClass('visibile');
+        // Riattivo il bottone cerca
+        $('.btn_ricerca').attr("disabled", false);
     });
 
     // Evento click sul bottone con la lente
@@ -289,6 +291,8 @@ $(document).ready(function(){
     function checkLingua(testo_ricerca) {
         // Controllo se è stata selezionata una lingua
         if ($('#scelta_lingua').val() != '') {
+            // Disattivo il bottone cerca
+            $('.btn_ricerca').attr("disabled", true);
             // Aggiorno la variabile del linguaggio che sarà un parametro nella ricerca Ajax
             linguaggio = $('#scelta_lingua').val();
             // Chiamo la funzione che controlla il teso inserito nella barra di ricerca

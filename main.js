@@ -61,6 +61,7 @@ $(document).ready(function(){
     creaListaVoti(lista_voti);
 
     // Evento scroll in basso che mi carica dinamicamente ulteriori film o serie tv richiamando le relative api
+    //Posso usare l'evento Window Scroll per scoprire quando la barra di scorrimento dell'utente tocca la parte inferiore della pagina. Prendo la differenza tra l'altezza del documento e l'altezza della finestra. Questa differenza è uguale alla finestra scrollTop quando l'utente ha fatto scorrere verso il basso. Se la tua pagina web ha una barra di scorrimento verticale, l'altezza del documento sarà maggiore dell'altezza della finestra. In alternativa, se la pagina Web non ha una barra di scorrimento verticale, otterrai l'altezza del documento inferiore all'altezza della finestra.
     $(window).scroll(function () {
         if ($(document).height() - $(this).height() == $(this).scrollTop()) {
             if (pagina_film > pagine_film) {
@@ -293,7 +294,7 @@ $(document).ready(function(){
         } else {
             alert('Selezionare una lingua, prima di effettuare la ricerca')
         }
-        // Resetto la select della linguaimpostando la selezione sulla prima voce
+        // Resetto la select della lingua impostando la selezione sulla prima voce
         $('#scelta_lingua').prop('selectedIndex',0);
     }
 

@@ -50,6 +50,7 @@ $(document).ready(function(){
     var loading_film = true;
     var loading_serie = true;
     var link_cliccato;
+
     // Chiamo la funzione che lancia la chiamata ajax alle API per trovare la lista dei generi dei film
     apiGenere(urlgenerefilm);
     // Chiamo la funzione che lancia la chiamata ajax alle API per trovare la lista dei generi delle serie TV
@@ -130,7 +131,8 @@ $(document).ready(function(){
     // Evento click sul filtro Film
     $(document).on('click', '#filtro_film', function(){
         link_cliccato = this.id;
-        console.log(link_cliccato);
+        // Chiamo la funzione che mi mostra il filtro dei voti dei film
+        filtroTipo('Film', 'voto_film', 'voto_serie');
         // Chiamo la funzione che mi filtra i Film
         filtroTipo('Film', 'genere_film', 'genere_serie', 'voto_serie', 'voto_film');
     });
@@ -138,25 +140,22 @@ $(document).ready(function(){
     // Evento click sul filtro Serie TV
     $(document).on('click', '#filtro_serie', function(){
         link_cliccato = this.id;
-        console.log(link_cliccato);
+        // Chiamo la funzione che mi mostra il filtro dei voti delle serie TV
+        filtroTipo('Serie TV', 'voto_serie', 'voto_film');
         // Chiamo la funzione che mi filtra le Serie TV
         filtroTipo('Serie TV', 'genere_serie', 'genere_film', 'voto_film', 'voto_serie');
     });
 
     // Evento scelta opzione tendina genere Film
     $('#genere_film').change(function(){
-        // Chiamo la funzione che mi mostra il filtro dei voti dei film
-        filtroTipo('Film', 'voto_film', 'voto_serie');
         // Chiamo la funzione che mi filtra i generi dei film in base all'opzione scelta nella select
-        filtroGenere('genere_film', 'Film');
+        filtroGenere('genere_film', 'Film', 'voto_film');
     });
 
     // Evento scelta opzione tendina genere serie TV
     $('#genere_serie').change(function(){
-        // Chiamo la funzione che mi mostra il filtro dei voti delle serie TV
-        filtroTipo('Serie TV', 'voto_serie', 'voto_film');
         // Chiamo la funzione che mi filtra i generi delle serie TV in base all'opzione scelta nella select
-        filtroGenere('genere_serie', 'Serie TV');
+        filtroGenere('genere_serie', 'Serie TV', 'voto_serie');
     });
 
     // Evento scelta opzione tendina punteggio Film
@@ -230,11 +229,26 @@ $(document).ready(function(){
     }
 
     // Funzione che crea il filtro per visualizzare solo i film o solo le serie TV in base al tipo
-    function filtroGenere(genere, tipo) {
+    function filtroGenere(genere, tipo, voto) {
+        // Recupero il voto selezionato dall'utente
+        var voto_selezionato = $('#' + voto).val();
         // Recupero il genere selezionato dall'utente
         var genere_selezionato = $('#' + genere).val();
         if (genere_selezionato == '') {
             filtroTipo(tipo);
+        } else if (voto_selezionato != '') {
+            filtroTipo(tipo);
+            // Verifico se il campo tipo della card contiene la selezione della tendina dei generi dei film. Il metodo toggle () nasconde la card che non contiene come tipo la parola Film.
+            $('.film:visible').filter(function(){
+                // Memorizzo nella variabile voto_film il voto del film attuale presente nel data attribute relativo
+                var voto_film = $(this).children('.flip-box-inner').children('.card-img-overlay').children('.punteggio').children('.voto').attr("data-voto");
+                // Memorizzo nella variabile percorso il selettore del tipo in cui cercare
+                var percorso = $(this).children('.flip-box-inner').children('.card-img-overlay').children('.genere').children('.genre');
+                // Trasformo in array la stringa dei generi relativa a questo film o serie tv
+                var percorso_text = percorso.text().toLocaleLowerCase().split(', ');
+                // Mostro il film o la  serie tv se l'array dei generi creato in precedenza contiene il genere selezionato nella tendina
+                $(this).toggle(percorso_text.includes(genere_selezionato) != false && voto_film == voto_selezionato);
+            })
         } else {
             filtroTipo(tipo);
             // Verifico se il campo tipo della card contiene la selezione della tendina dei generi dei film. Il metodo toggle () nasconde la card che non contiene come tipo la parola Film.
@@ -263,7 +277,7 @@ $(document).ready(function(){
         // Resetto la select_uno impostando la selezione sulla prima voce
         $('#' + select_uno).prop('selectedIndex',0);
         // Resetto la select_tre impostando la selezione sulla prima voce
-        $('#' + select_quattro).prop('selectedIndex',0);
+        //$('#' + select_quattro).prop('selectedIndex',0);
         // Rendo visibile la select dei generi (dei Film o delle serie TV in base ai valori passati)
         $('#' + select_uno).addClass('visibile');
     }

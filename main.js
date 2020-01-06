@@ -67,7 +67,8 @@ $(document).ready(function(){
             if (pagina_film > pagine_film) {
                 return false;
             } else {
-                if (loading_film && link_cliccato == 'filtro_film') {
+                console.log(link_cliccato);
+                if ((loading_film && link_cliccato == undefined) || (loading_film && link_cliccato == 'filtro_film')) {
     	            loading_film = false;
     	            cercaFilm($('.cerca_film').val(), urlfilm, pagine_film, pagina_film);
                 }
@@ -75,7 +76,8 @@ $(document).ready(function(){
             if (pagina_serie > pagine_serie) {
                 return false;
             } else {
-                if (loading_serie && link_cliccato == 'filtro_serie') {
+                console.log(link_cliccato);
+                if ((loading_film && link_cliccato == undefined) || (loading_film && link_cliccato == 'filtro_serie')) {
     	            loading_serie = false;
                     cercaFilm($('.cerca_film').val(), urltv, pagine_serie, pagina_serie);
                 }

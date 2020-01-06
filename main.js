@@ -47,6 +47,9 @@ $(document).ready(function(){
     // Compilo l'html con la funzione di handlebars
     var template_function = Handlebars.compile(template_html);
 
+    var loading_film = true;
+    var loading_serie = true;
+    var link_cliccato;
     // Chiamo la funzione che lancia la chiamata ajax alle API per trovare la lista dei generi dei film
     apiGenere(urlgenerefilm);
     // Chiamo la funzione che lancia la chiamata ajax alle API per trovare la lista dei generi delle serie TV
@@ -55,6 +58,28 @@ $(document).ready(function(){
     apiLingua(url_linguaggi);
     // Chiamo la funzione che crea le select dei voti dei film e delle serie TV
     creaListaVoti(lista_voti);
+
+    // Evento scroll in basso che mi carica dinamicamente ulteriori film o serie tv richiamando le relative api
+    $(window).scroll(function () {
+        if ($(document).height() - $(this).height() == $(this).scrollTop()) {
+            if (pagina_film > pagine_film) {
+                return false;
+            } else {
+                if (loading_film && link_cliccato == 'filtro_film') {
+    	            loading_film = false;
+    	            cercaFilm($('.cerca_film').val(), urlfilm, pagine_film, pagina_film);
+                }
+            }
+            if (pagina_serie > pagine_serie) {
+                return false;
+            } else {
+                if (loading_serie && link_cliccato == 'filtro_serie') {
+    	            loading_serie = false;
+                    cercaFilm($('.cerca_film').val(), urltv, pagine_serie, pagina_serie);
+                }
+            }
+        }
+    });
 
     // Evento focus sul campo di ricerca
     $('.cerca_film').focus(function(){
@@ -82,6 +107,10 @@ $(document).ready(function(){
 
     // Evento click sul bottone con la lente
     $(document).on('click', '.btn_ricerca', function(){
+        // Inzializzo di nuovo la pagina al valore di default
+        pagina_film = 1;
+        // Inzializzo di nuovo la pagina al valore di default
+        pagina_serie = 1;
         $('.cerca_film').blur();
         checkLingua();
     });
@@ -89,6 +118,10 @@ $(document).ready(function(){
     // Evento enter nell'input della barra di ricerca
     $(document).on('keypress', '.cerca_film', function(){
     	if(event.which == '13'){
+            // Inzializzo di nuovo la pagina al valore di default
+            pagina_film = 1;
+            // Inzializzo di nuovo la pagina al valore di default
+            pagina_serie = 1;
             $('.cerca_film').blur();
             checkLingua();
     	}
@@ -96,12 +129,16 @@ $(document).ready(function(){
 
     // Evento click sul filtro Film
     $(document).on('click', '#filtro_film', function(){
+        link_cliccato = this.id;
+        console.log(link_cliccato);
         // Chiamo la funzione che mi filtra i Film
         filtroTipo('Film', 'genere_film', 'genere_serie', 'voto_serie', 'voto_film');
     });
 
     // Evento click sul filtro Serie TV
     $(document).on('click', '#filtro_serie', function(){
+        link_cliccato = this.id;
+        console.log(link_cliccato);
         // Chiamo la funzione che mi filtra le Serie TV
         filtroTipo('Serie TV', 'genere_serie', 'genere_film', 'voto_film', 'voto_serie');
     });
@@ -334,6 +371,14 @@ $(document).ready(function(){
                     cercaCast(data, url_suffisso);
                     // Chiamo la funzione che mi restituisce il genere dei film e delle serie passandogli l'url relativo
                     cercaGenere(data, url_suffisso);
+
+                    if (url_suffisso == 'search/movie') { // Film non trovati
+                        loading_film = true;
+                        pagina_film++;
+                    } else { // Serie tv non trovate
+                        loading_serie = true;
+                        pagina_serie++;
+                    }
                 } else { // Faccio un alert se la chiamata ajax non restituisce risultati
                     if (url_suffisso == 'search/movie') { // Film non trovati
                         // Faccio scomparire il filtro di ricerca per i film
@@ -349,7 +394,7 @@ $(document).ready(function(){
             error: function() {
                 alert('Error');
             },
-            complete: function() {
+            /*complete: function() {
                 if (url_suffisso == 'search/movie') {
                     // Incremento la pagina
                     pagina_film++;
@@ -368,7 +413,7 @@ $(document).ready(function(){
                         pagina_serie = 1;
                     }
                 }
-            }
+            }*/
         });
     }
     // Funzione per ricercare il genere di un film o una serie tv (in base alla variabile url) inserito nella barra di ricerca interrogando la relativa API

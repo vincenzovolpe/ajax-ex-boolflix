@@ -10,15 +10,7 @@ body {
 }
 
 .navbar-dark h1 {
-    color: red;
-}
-
-.btn-success {
-    background-color: red;
-}
-
-.btn-success:hover {
-    background-color: maroon;
+    color: #dc3545;
 }
 
 .yellow {

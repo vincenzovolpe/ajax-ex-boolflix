@@ -5,7 +5,7 @@ $(document).ready(function(){
     // Api Key personale per accedere alle API
     var api_key = 'f5a961c5e8b2e2e5f35c17c6f3fd8ef6';
     // Imposto la lingua di default dei risultati di ricerca di film e serie tv
-    var linguaggio = 'it';
+    var linguaggio;
     var risultati_film;
     var risultati_serie;
     // Variabile che memorizza il numero di pagine restituite nella ricerca di un film
@@ -67,7 +67,6 @@ $(document).ready(function(){
             if (pagina_film > pagine_film) {
                 return false;
             } else {
-                console.log(link_cliccato);
                 if ((loading_film && link_cliccato == undefined) || (loading_film && link_cliccato == 'filtro_film')) {
     	            loading_film = false;
     	            cercaFilm($('.cerca_film').val(), urlfilm, pagine_film, pagina_film);
@@ -76,7 +75,6 @@ $(document).ready(function(){
             if (pagina_serie > pagine_serie) {
                 return false;
             } else {
-                console.log(link_cliccato);
                 if ((loading_film && link_cliccato == undefined) || (loading_film && link_cliccato == 'filtro_serie')) {
     	            loading_serie = false;
                     cercaFilm($('.cerca_film').val(), urltv, pagine_serie, pagina_serie);
@@ -87,28 +85,16 @@ $(document).ready(function(){
 
     // Evento focus sul campo di ricerca
     $('.cerca_film').focus(function(){
-        // Elimino dalla pagina la lista dei film presenti
-        $('.colonna').remove();
-        // Nascondo la select dei generi dei film
-        $('#genere_film').removeClass('visibile');
-        // Nascondo la select dei generi delle Serie TV
-        $('#genere_serie').removeClass('visibile');
-        // Nascondo la select dei voti dei film
-        $('#voto_film').removeClass('visibile');
-        // Nascondo la select dei voti delle Serie TV
-        $('#voto_serie').removeClass('visibile');
-        // Faccio scomparire il filtro di ricerca per i film
-        $('#filtro_film').removeClass('visibile');
-        // Faccio scomparire il filtro di ricerca per le serie tv
-        $('#filtro_serie').removeClass('visibile');
+        console.log($('.colonna' ).length);
+        // Resetto l'indice delle lingue solo quando non ci sono card nella pagina, in questo modo posso selezionare la lingua prima di scrivere la parola di ricerca
+        if ($('.colonna' ).length != 0) {
+            // Resetto la select della lingua impostando la selezione sulla prima voce
+            $('#scelta_lingua').prop('selectedIndex',0);
+        }
+        // Chiamo la funzione che mi resetta i filtri, la barra di ricerca e la pagina
+        resetRicerca();
         // Pulisco la barra di ricerca
         $('.cerca_film').val('');
-        // Faccio comparire la label del filtro della lingua
-        $('#language').addClass('visibile');
-        // Faccio comparire il filtro della lingua
-        $('#scelta_lingua').addClass('visibile');
-        // Riattivo il bottone cerca
-        $('.btn_ricerca').attr("disabled", false);
     });
 
     // Evento click sul bottone con la lente
@@ -118,7 +104,8 @@ $(document).ready(function(){
         // Inzializzo di nuovo la pagina al valore di default
         pagina_serie = 1;
         $('.cerca_film').blur();
-        checkLingua();
+        // Chiamo la funzione che controlla il testo inserito nella barra di ricerca
+        checkTesto($('.cerca_film').val());
     });
 
     // Evento enter nell'input della barra di ricerca
@@ -129,7 +116,8 @@ $(document).ready(function(){
             // Inzializzo di nuovo la pagina al valore di default
             pagina_serie = 1;
             $('.cerca_film').blur();
-            checkLingua();
+            // Chiamo la funzione che controlla il tes7o inserito nella barra di ricerca
+            checkTesto($('.cerca_film').val());
     	}
     });
 
@@ -149,6 +137,19 @@ $(document).ready(function(){
         filtroTipo('Serie TV', 'voto_serie', 'voto_film');
         // Chiamo la funzione che mi filtra le Serie TV
         filtroTipo('Serie TV', 'genere_serie', 'genere_film', 'voto_film', 'voto_serie');
+    });
+
+    // Evento scelta opzione lingua di ricerca dei risultati
+    $('#scelta_lingua').change(function(){
+        console.log('Contatore pagina film: ' + pagina_film);
+        console.log('Contatore pagina serie: ' + pagina_serie);
+        // Faccio partire una nuova ricerca dopo aver selezionato un opzione dellaselect dellalingua solo se è presente il testo della ricerca nella barra di ricerca, altrimenti devo inserirlo e fare click
+        if ($('.cerca_film').val()) {
+            // Chiamo la funzione che mi resetta i filtri, la barra di ricerca e la pagina
+            resetRicerca();
+            // Simulo il click per richiamare le relative funzioni di ricerca associate al click originale
+            $('.btn_ricerca').trigger('click');
+        }
     });
 
     // Evento scelta opzione tendina genere Film
@@ -174,6 +175,26 @@ $(document).ready(function(){
         // Chiamo la funzione che mi filtra i generi delle serie TV in base all'opzione scelta nella select
         filtroVoto('voto_serie', 'Serie TV', 'genere_serie');
     });
+
+    // Funzione che mi resetta i filtri e la barra di ricerca
+    function resetRicerca() {
+        // Elimino dalla pagina la lista dei film presenti
+        $('.colonna').remove();
+        // Nascondo la select dei generi dei film
+        $('#genere_film').removeClass('visibile');
+        // Nascondo la select dei generi delle Serie TV
+        $('#genere_serie').removeClass('visibile');
+        // Nascondo la select dei voti dei film
+        $('#voto_film').removeClass('visibile');
+        // Nascondo la select dei voti delle Serie TV
+        $('#voto_serie').removeClass('visibile');
+        // Faccio scomparire il filtro di ricerca per i film
+        $('#filtro_film').removeClass('visibile');
+        // Faccio scomparire il filtro di ricerca per le serie tv
+        $('#filtro_serie').removeClass('visibile');
+        // Riattivo il bottone cerca
+        $('.btn_ricerca').attr("disabled", false);
+    }
 
     // Funzione che popola le select usate nell'applicazione (per filtrare i generi dei film e selle serie tv e  i linguaggi)
     function creaSelect(select, lista, tipo) {
@@ -287,38 +308,29 @@ $(document).ready(function(){
         $('#' + select_uno).addClass('visibile');
     }
 
-    // Funzione che controlla se  viene selezionata o meno la lingua proseguendo in caso positivo la ricerca dell'input inserito dall'utenteper la ricerca di un film
-    function checkLingua(testo_ricerca) {
-        // Controllo se è stata selezionata una lingua
-        if ($('#scelta_lingua').val() != '') {
-            // Disattivo il bottone cerca
-            $('.btn_ricerca').attr("disabled", true);
-            // Aggiorno la variabile del linguaggio che sarà un parametro nella ricerca Ajax
-            linguaggio = $('#scelta_lingua').val();
-            // Chiamo la funzione che controlla il teso inserito nella barra di ricerca
-            checkTesto($('.cerca_film').val());
-        } else {
-            alert('Selezionare una lingua, prima di effettuare la ricerca')
-        }
-        // Resetto la select della lingua impostando la selezione sulla prima voce
-        $('#scelta_lingua').prop('selectedIndex',0);
-    }
-
     // Funzione che  prende il testo in input e lo controlla chiamando le relative funzioni se il testo è correttamente valorizzato
     function checkTesto(testo_ricerca) {
         // Controllo se è stato inserito il testo nella barra di ricerca
         if (testo_ricerca.length != 0) {
-            // Chiamo la funzione che mi restituisce il numero di pagine di risultati del film cercato
-            var risultato_pagine_film = numPagine(testo_ricerca, urlfilm);
-            // Chiamo la funzione che mi restituisce il numero di pagine di risultati del film cercato
-            var risultato_pagine_serie = numPagine(testo_ricerca, urltv);
-            // Attendo che le due funzioni numPagine finiscono
-            $.when(risultato_pagine_film, risultato_pagine_serie).done(function(){
-                // Controllo se la ricerca dei film e delle serie non restituisce risultati
-                if (risultati_film == false && risultati_serie == false) {
-                        alert('Nessun risultato trovato per la ricerca inserita: ' + testo_ricerca);
-                }
-            });
+            if ($('#scelta_lingua').val() != '') {
+                // Disattivo il bottone cerca
+                $('.btn_ricerca').attr("disabled", true);
+                // Aggiorno la variabile del linguaggio che sarà un parametro nella ricerca Ajax
+                linguaggio = $('#scelta_lingua').val();
+                // Chiamo la funzione che mi restituisce il numero di pagine di risultati del film cercato
+                var risultato_pagine_film = numPagine(testo_ricerca, urlfilm);
+                // Chiamo la funzione che mi restituisce il numero di pagine di risultati del film cercato
+                var risultato_pagine_serie = numPagine(testo_ricerca, urltv);
+                // Attendo che le due funzioni numPagine finiscono
+                $.when(risultato_pagine_film, risultato_pagine_serie).done(function(){
+                    // Controllo se la ricerca dei film e delle serie non restituisce risultati
+                    if (risultati_film == false && risultati_serie == false) {
+                            alert('Nessun risultato trovato per la ricerca inserita: ' + testo_ricerca);
+                    }
+                });
+            } else {
+                alert('Selezionare una lingua, prima di effettuare la ricerca')
+            }
         } else {
             alert('Inserisci la query di ricerca');
         }
@@ -375,10 +387,10 @@ $(document).ready(function(){
             success: function(data) {
                 // Controlla se la chiamata restituisce qualche risultato
                 if(data.total_results > 0) {
-                    // Faccio scomparire la label del filtro della lingua
+                    /*// Faccio scomparire la label del filtro della lingua
                     $('#language').removeClass('visibile');
                     // Faccio scomparire il filtro della lingua
-                    $('#scelta_lingua').removeClass('visibile');
+                    $('#scelta_lingua').removeClass('visibile');*/
                     if (url_suffisso == 'search/movie') {
                         // Faccio comparire il filtro di ricerca per i film
                         $('#filtro_film').addClass('visibile');
@@ -393,7 +405,7 @@ $(document).ready(function(){
                     // Chiamo la funzione che mi restituisce il genere dei film e delle serie passandogli l'url relativo
                     cercaGenere(data, url_suffisso);
 
-                    if (url_suffisso == 'search/movie') { // Film non trovati
+                    if (url_suffisso == 'search/movie') {
                         loading_film = true;
                         pagina_film++;
                     } else { // Serie tv non trovate
@@ -401,14 +413,12 @@ $(document).ready(function(){
                         pagina_serie++;
                     }
                 } else { // Faccio un alert se la chiamata ajax non restituisce risultati
-                    if (url_suffisso == 'search/movie') { // Film non trovati
+                    if (url_suffisso == 'search/movie') {
                         // Faccio scomparire il filtro di ricerca per i film
                         $('#filtro_film').removeClass('visibile');
-                        //alert('Nessun risultato trovato per i film ' + testo_ricerca);
                     } else { // Serie tv non trovate
                         // Faccio scomparire il filtro di ricerca per le serie tv
                         $('#filtro_serie').removeClass('visibile');
-                        //alert('Nessun risultato trovato per le serie tv ' + testo_ricerca);
                     }
                 }
             },
